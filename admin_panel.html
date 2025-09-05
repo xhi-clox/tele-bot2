@@ -8,15 +8,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-primary: #f8fafc;
-      --bg-secondary: #e2e8f0;
-      --bg-tertiary: #cbd5e1;
-      --bg-card: #ffffff;
+      --bg-primary: #121826;
+      --bg-secondary: #1a202c;
+      --bg-tertiary: #2d3748;
+      --bg-card: #1e293b;
       --accent-primary: #7e57c2;
       --accent-secondary: #5e35b1;
-      --text-primary: #1e293b;
-      --text-secondary: #475569;
-      --text-tertiary: #64748b;
+      --text-primary: #e2e8f0;
+      --text-secondary: #a0aec0;
+      --text-tertiary: #718096;
       --success: #38a169;
       --warning: #d69e2e;
       --error: #e53e3e;
@@ -24,22 +24,22 @@
       --border-radius-sm: 6px;
       --border-radius-lg: 12px;
       --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.05);
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.2);
       --sidebar-width: 280px;
       --header-height: 60px;
     }
 
-    body.dark-mode {
-      --bg-primary: #121826;
-      --bg-secondary: #1a202c;
-      --bg-tertiary: #2d3748;
-      --bg-card: #1e293b;
-      --text-primary: #e2e8f0;
-      --text-secondary: #a0aec0;
-      --text-tertiary: #718096;
-      --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-      --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.2);
+    body.light-mode {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #e2e8f0;
+      --bg-tertiary: #cbd5e1;
+      --bg-card: #ffffff;
+      --text-primary: #1e293b;
+      --text-secondary: #475569;
+      --text-tertiary: #64748b;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.05);
     }
 
     * {
@@ -75,6 +75,7 @@
       top: 0;
       overflow-y: auto;
       transition: var(--transition);
+      z-index: 1000;
     }
 
     .admin-logo {
@@ -123,6 +124,7 @@
     .admin-main {
       flex: 1;
       padding: 20px;
+      transition: var(--transition);
     }
 
     .admin-header {
@@ -238,9 +240,17 @@
     }
 
     /* Tables */
+    .table-responsive {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: var(--border-radius-sm);
+      border: 1px solid var(--bg-tertiary);
+    }
+
     .admin-table {
       width: 100%;
       border-collapse: collapse;
+      min-width: 600px; /* Ensure minimum width for proper display */
     }
 
     .admin-table th,
@@ -248,6 +258,7 @@
       padding: 12px 15px;
       text-align: left;
       border-bottom: 1px solid var(--bg-tertiary);
+      white-space: nowrap; /* Prevent text wrapping */
     }
 
     .admin-table th {
@@ -255,10 +266,38 @@
       font-weight: 600;
       color: var(--text-secondary);
       font-size: 0.9rem;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
     .admin-table tr:hover {
       background: var(--bg-secondary);
+    }
+
+    /* Mobile table optimizations */
+    @media (max-width: 768px) {
+      .admin-table {
+        min-width: 500px;
+        font-size: 0.8rem;
+      }
+      
+      .admin-table th,
+      .admin-table td {
+        padding: 8px 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .admin-table {
+        min-width: 400px;
+        font-size: 0.75rem;
+      }
+      
+      .admin-table th,
+      .admin-table td {
+        padding: 6px 8px;
+      }
     }
 
     /* Buttons */
@@ -487,58 +526,6 @@
       font-size: 0.9rem;
     }
 
-    /* Responsive */
-    @media (max-width: 992px) {
-      .admin-sidebar {
-        width: 70px;
-        overflow: visible;
-      }
-      
-      .nav-link span {
-        display: none;
-      }
-      
-      .admin-logo span {
-        display: none;
-      }
-      
-      .admin-logo {
-        justify-content: center;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .admin-container {
-        flex-direction: column;
-      }
-      
-      .admin-sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-        padding: 10px 0;
-      }
-      
-      .admin-nav {
-        display: flex;
-        overflow-x: auto;
-        padding: 0 10px;
-      }
-      
-      .nav-item {
-        margin-bottom: 0;
-        margin-right: 5px;
-      }
-      
-      .nav-link span {
-        display: inline;
-      }
-      
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
     /* Toast Notification */
     .toast {
       position: fixed;
@@ -607,9 +594,409 @@
     .tab-content.active {
       display: block;
     }
+
+    /* User Details Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--bg-card);
+      border-radius: var(--border-radius);
+      padding: 20px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--bg-tertiary);
+    }
+
+    .modal-overlay.show .modal {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--bg-tertiary);
+    }
+
+    .modal-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 5px;
+      border-radius: 50%;
+      transition: var(--transition);
+    }
+
+    .modal-close:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .user-details {
+      display: grid;
+      gap: 15px;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--bg-tertiary);
+    }
+
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+
+    .detail-label {
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .detail-value {
+      color: var(--text-primary);
+      font-size: 0.9rem;
+    }
+
+    .user-avatar-large {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 15px;
+      display: block;
+      border: 3px solid var(--accent-primary);
+    }
+
+    .user-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .user-stat-card {
+      background: var(--bg-secondary);
+      padding: 15px;
+      border-radius: var(--border-radius-sm);
+      text-align: center;
+      border: 1px solid var(--bg-tertiary);
+    }
+
+    .user-stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent-primary);
+      margin-bottom: 5px;
+    }
+
+    .user-stat-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    /* Withdrawal Tab Content */
+    .withdrawal-tab-content {
+      display: none;
+    }
+
+    .withdrawal-tab-content.active {
+      display: block;
+    }
+
+    /* Mobile Navigation Button */
+    .mobile-menu-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      cursor: pointer;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(126, 87, 194, 0.4);
+      transition: all 0.3s ease;
+      border: none;
+    }
+
+    .mobile-menu-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 16px rgba(126, 87, 194, 0.5);
+    }
+
+    .mobile-menu-button.active {
+      transform: rotate(45deg);
+    }
+
+    /* Mobile-First Responsive Design */
+    @media (max-width: 1200px) {
+      .admin-sidebar {
+        width: 250px;
+      }
+    }
+
+    @media (max-width: 992px) {
+      .admin-sidebar {
+        width: 70px;
+        overflow: visible;
+      }
+      
+      .nav-link span {
+        display: none;
+      }
+      
+      .admin-logo span {
+        display: none;
+      }
+      
+      .admin-logo {
+        justify-content: center;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .admin-container {
+        flex-direction: column;
+      }
+      
+      .admin-sidebar {
+        position: fixed;
+        left: -280px;
+        width: 280px;
+        height: 100vh;
+        z-index: 1000;
+        transition: left 0.3s ease;
+      }
+      
+      .admin-sidebar.mobile-open {
+        left: 0;
+      }
+      
+      .admin-nav {
+        display: block;
+        padding: 0 10px;
+      }
+      
+      .nav-item {
+        margin-bottom: 5px;
+        min-width: auto;
+      }
+      
+      .nav-link span {
+        display: inline;
+      }
+      
+      .nav-link {
+        padding: 12px 15px;
+        font-size: 1rem;
+      }
+      
+      .admin-main {
+        padding: 15px;
+        width: 100%;
+      }
+      
+      .admin-header {
+        padding: 12px 15px;
+        margin-bottom: 15px;
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+      }
+      
+      .header-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        margin-bottom: 15px;
+      }
+      
+      .stat-card {
+        padding: 15px;
+      }
+      
+      .content-card {
+        padding: 15px;
+        margin-bottom: 15px;
+      }
+      
+      
+      .btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+      }
+      
+      .btn-sm {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+      }
+      
+      .mobile-menu-button {
+        display: flex;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .admin-main {
+        padding: 10px;
+      }
+      
+      .admin-header {
+        padding: 10px 12px;
+        margin-bottom: 10px;
+      }
+      
+      .page-title {
+        font-size: 1.2rem;
+      }
+      
+      .stats-grid {
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      
+      .stat-card {
+        padding: 12px;
+      }
+      
+      .stat-value {
+        font-size: 1.5rem;
+      }
+      
+      .content-card {
+        padding: 12px;
+        margin-bottom: 10px;
+      }
+      
+      .card-title {
+        font-size: 1rem;
+      }
+      
+      
+      .form-control {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+      }
+      
+      .search-input {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+      }
+      
+      .search-btn {
+        padding: 8px 10px;
+      }
+      
+      .pagination {
+        flex-wrap: wrap;
+        gap: 3px;
+      }
+      
+      .page-link {
+        padding: 6px 8px;
+        font-size: 0.75rem;
+      }
+      
+      .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      
+      .card-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .search-box {
+        width: 100%;
+      }
+    }
+
+    /* Mobile Modal Adjustments */
+    @media (max-width: 768px) {
+      .modal {
+        width: 95%;
+        padding: 15px;
+        margin: 10px;
+      }
+      
+      .modal-title {
+        font-size: 1.1rem;
+      }
+      
+      .user-stats-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      
+      .detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+      }
+      
+      .detail-label {
+        font-size: 0.8rem;
+      }
+      
+      .detail-value {
+        font-size: 0.85rem;
+      }
+    }
   </style>
 </head>
-<body>
+<body class="dark-mode">
   <!-- Login Screen (initially visible) -->
   <div id="loginScreen" class="login-container">
     <div class="login-card">
@@ -640,7 +1027,7 @@
   <!-- Admin Panel (initially hidden) -->
   <div id="adminPanel" class="admin-container" style="display: none;">
     <!-- Sidebar -->
-    <div class="admin-sidebar">
+    <div class="admin-sidebar" id="adminSidebar">
       <div class="admin-logo">
         <i class="fas fa-coins"></i>
         <span>AdLancer Admin</span>
@@ -690,8 +1077,11 @@
       <div class="admin-header">
         <h1 class="page-title" id="pageTitle">Dashboard</h1>
         <div class="header-actions">
+          <button class="btn btn-secondary btn-sm" id="refreshDataBtn" title="Refresh Data">
+            <i class="fas fa-sync-alt"></i>
+          </button>
           <button class="theme-toggle" id="themeToggle">
-            <i class="fas fa-moon"></i>
+            <i class="fas fa-sun"></i>
           </button>
         </div>
       </div>
@@ -857,6 +1247,7 @@
                     <th>User</th>
                     <th>Amount</th>
                     <th>Method</th>
+                    <th>Account</th>
                     <th>Approved Date</th>
                   </tr>
                 </thead>
@@ -880,6 +1271,7 @@
                     <th>ID</th>
                     <th>User</th>
                     <th>Amount</th>
+                    <th>Method</th>
                     <th>Reason</th>
                     <th>Rejected Date</th>
                   </tr>
@@ -995,10 +1387,30 @@
         </div>
       </div>
     </div>
+    
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-button" id="mobileMenuButton" style="display: none;">
+      <i class="fas fa-bars"></i>
+    </button>
   </div>
 
   <!-- Toast Notification -->
   <div class="toast" id="toast"></div>
+
+  <!-- User Details Modal -->
+  <div class="modal-overlay" id="userModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">User Details</h3>
+        <button class="modal-close" id="closeUserModal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="user-details" id="userDetailsContent">
+        <!-- User details will be populated here -->
+      </div>
+    </div>
+  </div>
 
   <script>
     // Admin credentials (in a real application, these should be stored securely on the server)
@@ -1013,8 +1425,14 @@
     const loginForm = document.getElementById('loginForm');
     const logoutBtn = document.getElementById('logoutBtn');
     const themeToggleBtn = document.getElementById('themeToggle');
+    const refreshDataBtn = document.getElementById('refreshDataBtn');
     const pageTitle = document.getElementById('pageTitle');
     const toast = document.getElementById('toast');
+    const userModal = document.getElementById('userModal');
+    const closeUserModal = document.getElementById('closeUserModal');
+    const userDetailsContent = document.getElementById('userDetailsContent');
+    const adminSidebar = document.getElementById('adminSidebar');
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
 
     // Tab navigation
     const navLinks = document.querySelectorAll('.nav-link');
@@ -1071,17 +1489,66 @@
 
     // Theme toggle
     themeToggleBtn.addEventListener('click', function() {
+      document.body.classList.toggle('light-mode');
       document.body.classList.toggle('dark-mode');
       const isDarkMode = document.body.classList.contains('dark-mode');
       localStorage.setItem('adminDarkMode', isDarkMode ? 'dark' : 'light');
       themeToggleBtn.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
     });
 
+    // Refresh data button
+    refreshDataBtn.addEventListener('click', function() {
+      loadAdminData();
+      showToast('Data refreshed!', 'success');
+    });
+
+    // User modal functionality
+    closeUserModal.addEventListener('click', function() {
+      userModal.classList.remove('show');
+    });
+
+    userModal.addEventListener('click', function(e) {
+      if (e.target === userModal) {
+        userModal.classList.remove('show');
+      }
+    });
+
+    // Mobile menu toggle
+    mobileMenuButton.addEventListener('click', function() {
+      adminSidebar.classList.toggle('mobile-open');
+      this.classList.toggle('active');
+    });
+
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', function(e) {
+      if (window.innerWidth <= 768 && 
+          adminSidebar.classList.contains('mobile-open') && 
+          !adminSidebar.contains(e.target) && 
+          e.target !== mobileMenuButton) {
+        adminSidebar.classList.remove('mobile-open');
+        mobileMenuButton.classList.remove('active');
+      }
+    });
+
     // Apply saved theme
     function applySavedTheme() {
-      const savedTheme = localStorage.getItem('adminDarkMode') || 'light';
+      const savedTheme = localStorage.getItem('adminDarkMode') || 'dark';
       document.body.classList.toggle('dark-mode', savedTheme === 'dark');
+      document.body.classList.toggle('light-mode', savedTheme === 'light');
       themeToggleBtn.innerHTML = savedTheme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    }
+
+    // Check screen size and show/hide mobile menu button
+    function checkScreenSize() {
+      if (window.innerWidth <= 768) {
+        mobileMenuButton.style.display = 'flex';
+        adminSidebar.classList.remove('mobile-open');
+        mobileMenuButton.classList.remove('active');
+      } else {
+        mobileMenuButton.style.display = 'none';
+        adminSidebar.classList.remove('mobile-open');
+        mobileMenuButton.classList.remove('active');
+      }
     }
 
     // Tab navigation
@@ -1102,6 +1569,11 @@
         
         // Update page title
         pageTitle.textContent = this.querySelector('span').textContent;
+        
+        // On mobile, close the sidebar after selecting a tab
+        if (window.innerWidth <= 768) {
+          adminSidebar.classList.remove('mobile-open');
+        }
       });
     });
 
@@ -1117,7 +1589,10 @@
         
         // Show corresponding content
         const tabId = `${this.dataset.withdrawalTab}WithdrawalsTab`;
-        document.getElementById(tabId).classList.add('active');
+        const contentElement = document.getElementById(tabId);
+        if (contentElement) {
+          contentElement.classList.add('active');
+        }
       });
     });
 
@@ -1218,6 +1693,7 @@
             <td>${request.userName}</td>
             <td>${request.amount} points</td>
             <td>${request.method}</td>
+            <td>${request.account}</td>
             <td>${new Date(request.approvedDate || request.date).toLocaleDateString()}</td>
           `;
           approvedTable.appendChild(row);
@@ -1226,6 +1702,7 @@
             <td>${request.id}</td>
             <td>${request.userName}</td>
             <td>${request.amount} points</td>
+            <td>${request.method}</td>
             <td>${request.rejectionReason || 'No reason provided'}</td>
             <td>${new Date(request.rejectedDate || request.date).toLocaleDateString()}</td>
           `;
@@ -1376,15 +1853,58 @@
       );
       
       if (user) {
-        alert(`
-          User Details:
-          Name: ${user.name}
-          Points: ${user.points || 0}
-          Ads Watched: ${user.totalAdsWatchedLifetime || 0}
-          Referral Code: ${user.referralCode}
-          Referred By: ${user.referredBy || 'None'}
-          Referrals: ${user.referredUsers ? user.referredUsers.length : 0}
-        `);
+        userDetailsContent.innerHTML = `
+          <img src="${user.photoUrl || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'}" 
+               alt="User Avatar" class="user-avatar-large">
+          
+          <div class="user-stats-grid">
+            <div class="user-stat-card">
+              <div class="user-stat-value">${user.points || 0}</div>
+              <div class="user-stat-label">Points</div>
+            </div>
+            <div class="user-stat-card">
+              <div class="user-stat-value">${user.totalAdsWatchedLifetime || 0}</div>
+              <div class="user-stat-label">Ads Watched</div>
+            </div>
+            <div class="user-stat-card">
+              <div class="user-stat-value">${user.adsWatchedToday || 0}</div>
+              <div class="user-stat-label">Today's Ads</div>
+            </div>
+            <div class="user-stat-card">
+              <div class="user-stat-value">${user.referredUsers ? user.referredUsers.length : 0}</div>
+              <div class="user-stat-label">Referrals</div>
+            </div>
+          </div>
+          
+          <div class="detail-row">
+            <span class="detail-label">Name:</span>
+            <span class="detail-value">${user.name}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Telegram ID:</span>
+            <span class="detail-value">${user.telegramId || 'Guest User'}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Referral Code:</span>
+            <span class="detail-value">${user.referralCode}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Referred By:</span>
+            <span class="detail-value">${user.referredBy || 'None'}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Last Ad Watch:</span>
+            <span class="detail-value">${user.lastAdWatchDate || 'Never'}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Claimed Bonuses:</span>
+            <span class="detail-value">${user.claimedBonuses ? user.claimedBonuses.length : 0}</span>
+          </div>
+        `;
+        
+        userModal.classList.add('show');
+      } else {
+        showToast('User not found!', 'error');
       }
     }
 
@@ -1436,7 +1956,16 @@
     function initAdminPanel() {
       checkLoginStatus();
       applySavedTheme();
+      checkScreenSize();
+      window.addEventListener('resize', checkScreenSize);
     }
+
+    // Listen for storage changes to refresh data when main app updates
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'galaxyEarnAllUsers' || e.key === 'galaxyEarnWithdrawalRequests') {
+        loadAdminData();
+      }
+    });
 
     // Run initialization when DOM is loaded
     document.addEventListener('DOMContentLoaded', initAdminPanel);
