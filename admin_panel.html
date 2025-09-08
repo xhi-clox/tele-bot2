@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -109,7 +110,8 @@
       transition: var(--transition);
     }
 
-    .nav-link:hover, .nav-link.active {
+    .nav-link:hover,
+    .nav-link.active {
       background: rgba(126, 87, 194, 0.1);
       color: var(--accent-primary);
     }
@@ -250,7 +252,8 @@
     .admin-table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 600px; /* Ensure minimum width for proper display */
+      min-width: 600px;
+      /* Ensure minimum width for proper display */
     }
 
     .admin-table th,
@@ -258,7 +261,8 @@
       padding: 12px 15px;
       text-align: left;
       border-bottom: 1px solid var(--bg-tertiary);
-      white-space: nowrap; /* Prevent text wrapping */
+      white-space: nowrap;
+      /* Prevent text wrapping */
     }
 
     .admin-table th {
@@ -281,7 +285,7 @@
         min-width: 500px;
         font-size: 0.8rem;
       }
-      
+
       .admin-table th,
       .admin-table td {
         padding: 8px 10px;
@@ -293,7 +297,7 @@
         min-width: 400px;
         font-size: 0.75rem;
       }
-      
+
       .admin-table th,
       .admin-table td {
         padding: 6px 8px;
@@ -782,19 +786,19 @@
         width: 70px;
         overflow: visible;
       }
-      
+
       .nav-link span {
         display: none;
       }
-      
+
       .admin-logo span {
         display: none;
       }
-      
+
       .admin-logo {
         justify-content: center;
       }
-      
+
       .stats-grid {
         grid-template-columns: repeat(2, 1fr);
       }
@@ -804,7 +808,7 @@
       .admin-container {
         flex-direction: column;
       }
-      
+
       .admin-sidebar {
         position: fixed;
         left: -280px;
@@ -813,35 +817,35 @@
         z-index: 1000;
         transition: left 0.3s ease;
       }
-      
+
       .admin-sidebar.mobile-open {
         left: 0;
       }
-      
+
       .admin-nav {
         display: block;
         padding: 0 10px;
       }
-      
+
       .nav-item {
         margin-bottom: 5px;
         min-width: auto;
       }
-      
+
       .nav-link span {
         display: inline;
       }
-      
+
       .nav-link {
         padding: 12px 15px;
         font-size: 1rem;
       }
-      
+
       .admin-main {
         padding: 15px;
         width: 100%;
       }
-      
+
       .admin-header {
         padding: 12px 15px;
         margin-bottom: 15px;
@@ -849,38 +853,38 @@
         gap: 10px;
         align-items: flex-start;
       }
-      
+
       .header-actions {
         width: 100%;
         justify-content: space-between;
       }
-      
+
       .stats-grid {
         grid-template-columns: 1fr;
         gap: 15px;
         margin-bottom: 15px;
       }
-      
+
       .stat-card {
         padding: 15px;
       }
-      
+
       .content-card {
         padding: 15px;
         margin-bottom: 15px;
       }
-      
-      
+
+
       .btn {
         padding: 6px 12px;
         font-size: 0.8rem;
       }
-      
+
       .btn-sm {
         padding: 4px 8px;
         font-size: 0.75rem;
       }
-      
+
       .mobile-menu-button {
         display: flex;
       }
@@ -890,74 +894,74 @@
       .admin-main {
         padding: 10px;
       }
-      
+
       .admin-header {
         padding: 10px 12px;
         margin-bottom: 10px;
       }
-      
+
       .page-title {
         font-size: 1.2rem;
       }
-      
+
       .stats-grid {
         gap: 10px;
         margin-bottom: 10px;
       }
-      
+
       .stat-card {
         padding: 12px;
       }
-      
+
       .stat-value {
         font-size: 1.5rem;
       }
-      
+
       .content-card {
         padding: 12px;
         margin-bottom: 10px;
       }
-      
+
       .card-title {
         font-size: 1rem;
       }
-      
-      
+
+
       .form-control {
         padding: 8px 10px;
         font-size: 0.85rem;
       }
-      
+
       .search-input {
         padding: 8px 10px;
         font-size: 0.85rem;
       }
-      
+
       .search-btn {
         padding: 8px 10px;
       }
-      
+
       .pagination {
         flex-wrap: wrap;
         gap: 3px;
       }
-      
+
       .page-link {
         padding: 6px 8px;
         font-size: 0.75rem;
       }
-      
+
       .card-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
       }
-      
+
       .card-actions {
         width: 100%;
         justify-content: space-between;
       }
-      
+
       .search-box {
         width: 100%;
       }
@@ -970,32 +974,33 @@
         padding: 15px;
         margin: 10px;
       }
-      
+
       .modal-title {
         font-size: 1.1rem;
       }
-      
+
       .user-stats-grid {
         grid-template-columns: 1fr;
         gap: 10px;
       }
-      
+
       .detail-row {
         flex-direction: column;
         align-items: flex-start;
         gap: 5px;
       }
-      
+
       .detail-label {
         font-size: 0.8rem;
       }
-      
+
       .detail-value {
         font-size: 0.85rem;
       }
     }
   </style>
 </head>
+
 <body class="dark-mode">
   <!-- Login Screen (initially visible) -->
   <div id="loginScreen" class="login-container">
@@ -1387,7 +1392,7 @@
         </div>
       </div>
     </div>
-    
+
     <!-- Mobile Menu Button -->
     <button class="mobile-menu-button" id="mobileMenuButton" style="display: none;">
       <i class="fas fa-bars"></i>
@@ -1412,11 +1417,31 @@
     </div>
   </div>
 
+  <!-- Firebase App (the core Firebase SDK) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <!-- Firebase Firestore -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
   <script>
-    // Admin credentials (in a real application, these should be stored securely on the server)
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      // Replace with your Firebase project configuration
+      apiKey: "AIzaSyBJdfIANk4BLn4PaQhH2n45kMRkvAZ-jM4",
+      authDomain: "telebot-xhiclox.firebaseapp.com",
+      projectId: "telebot-xhiclox",
+      storageBucket: "telebot-xhiclox.firebasestorage.app",
+      messagingSenderId: "246768497610",
+      appId: "1:246768497610:web:69de7ab2ed0b7cdf145533"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Admin credentials
     const ADMIN_CREDENTIALS = {
       username: "admin",
-      password: "admin123" // In production, this should be a hashed password
+      password: "admin123"
     };
 
     // DOM Elements
@@ -1442,13 +1467,18 @@
     const withdrawalTabs = document.querySelectorAll('[data-withdrawal-tab]');
     const withdrawalTabContents = document.querySelectorAll('.withdrawal-tab-content');
 
+    // Real-time listeners
+    let usersListener = null;
+    let withdrawalsListener = null;
+    let settingsListener = null;
+
     // Check if user is already logged in
     function checkLoginStatus() {
       const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
       if (isLoggedIn) {
         loginScreen.style.display = 'none';
         adminPanel.style.display = 'flex';
-        loadAdminData();
+        setupRealtimeListeners();
       }
     }
 
@@ -1462,33 +1492,38 @@
     }
 
     // Login form submission
-    loginForm.addEventListener('submit', function(e) {
+    loginForm.addEventListener('submit', function (e) {
       e.preventDefault();
-      
+
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
-      
+
       if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
         localStorage.setItem('adminLoggedIn', 'true');
         loginScreen.style.display = 'none';
         adminPanel.style.display = 'flex';
         showToast('Login successful!', 'success');
-        loadAdminData();
+        setupRealtimeListeners();
       } else {
         showToast('Invalid credentials!', 'error');
       }
     });
 
     // Logout functionality
-    logoutBtn.addEventListener('click', function() {
+    logoutBtn.addEventListener('click', function () {
       localStorage.removeItem('adminLoggedIn');
+      // Unsubscribe from real-time listeners
+      if (usersListener) usersListener();
+      if (withdrawalsListener) withdrawalsListener();
+      if (settingsListener) settingsListener();
+
       adminPanel.style.display = 'none';
       loginScreen.style.display = 'flex';
       showToast('Logged out successfully', 'success');
     });
 
     // Theme toggle
-    themeToggleBtn.addEventListener('click', function() {
+    themeToggleBtn.addEventListener('click', function () {
       document.body.classList.toggle('light-mode');
       document.body.classList.toggle('dark-mode');
       const isDarkMode = document.body.classList.contains('dark-mode');
@@ -1497,34 +1532,37 @@
     });
 
     // Refresh data button
-    refreshDataBtn.addEventListener('click', function() {
-      loadAdminData();
+    refreshDataBtn.addEventListener('click', function () {
+      // Unsubscribe and resubscribe to refresh data
+      if (usersListener) usersListener();
+      if (withdrawalsListener) withdrawalsListener();
+      setupRealtimeListeners();
       showToast('Data refreshed!', 'success');
     });
 
     // User modal functionality
-    closeUserModal.addEventListener('click', function() {
+    closeUserModal.addEventListener('click', function () {
       userModal.classList.remove('show');
     });
 
-    userModal.addEventListener('click', function(e) {
+    userModal.addEventListener('click', function (e) {
       if (e.target === userModal) {
         userModal.classList.remove('show');
       }
     });
 
     // Mobile menu toggle
-    mobileMenuButton.addEventListener('click', function() {
+    mobileMenuButton.addEventListener('click', function () {
       adminSidebar.classList.toggle('mobile-open');
       this.classList.toggle('active');
     });
 
     // Close sidebar when clicking outside on mobile
-    document.addEventListener('click', function(e) {
-      if (window.innerWidth <= 768 && 
-          adminSidebar.classList.contains('mobile-open') && 
-          !adminSidebar.contains(e.target) && 
-          e.target !== mobileMenuButton) {
+    document.addEventListener('click', function (e) {
+      if (window.innerWidth <= 768 &&
+        adminSidebar.classList.contains('mobile-open') &&
+        !adminSidebar.contains(e.target) &&
+        e.target !== mobileMenuButton) {
         adminSidebar.classList.remove('mobile-open');
         mobileMenuButton.classList.remove('active');
       }
@@ -1553,23 +1591,23 @@
 
     // Tab navigation
     navLinks.forEach(link => {
-      link.addEventListener('click', function(e) {
+      link.addEventListener('click', function (e) {
         e.preventDefault();
-        
+
         // Remove active class from all links and tabs
         navLinks.forEach(l => l.classList.remove('active'));
         tabContents.forEach(t => t.classList.remove('active'));
-        
+
         // Add active class to clicked link
         this.classList.add('active');
-        
+
         // Show corresponding tab
         const tabId = `${this.dataset.tab}Tab`;
         document.getElementById(tabId).classList.add('active');
-        
+
         // Update page title
         pageTitle.textContent = this.querySelector('span').textContent;
-        
+
         // On mobile, close the sidebar after selecting a tab
         if (window.innerWidth <= 768) {
           adminSidebar.classList.remove('mobile-open');
@@ -1579,14 +1617,14 @@
 
     // Withdrawal tab navigation
     withdrawalTabs.forEach(tab => {
-      tab.addEventListener('click', function() {
+      tab.addEventListener('click', function () {
         // Remove active class from all tabs
         withdrawalTabs.forEach(t => t.classList.remove('active'));
         withdrawalTabContents.forEach(t => t.classList.remove('active'));
-        
+
         // Add active class to clicked tab
         this.classList.add('active');
-        
+
         // Show corresponding content
         const tabId = `${this.dataset.withdrawalTab}WithdrawalsTab`;
         const contentElement = document.getElementById(tabId);
@@ -1596,56 +1634,93 @@
       });
     });
 
-    // Load admin data from localStorage
-    function loadAdminData() {
-      // Load users data
-      const allUsersData = JSON.parse(localStorage.getItem('galaxyEarnAllUsers')) || {};
-      const users = Object.values(allUsersData);
-      
-      // Load withdrawal requests
-      const withdrawalRequests = JSON.parse(localStorage.getItem('galaxyEarnWithdrawalRequests')) || [];
-      
-      // Update dashboard stats
+    // Setup real-time Firestore listeners
+    function setupRealtimeListeners() {
+      // Users collection listener
+      usersListener = db.collection('users').onSnapshot(snapshot => {
+        const users = [];
+        snapshot.forEach(doc => {
+          users.push({ id: doc.id, ...doc.data() });
+        });
+
+        updateDashboardStats(users);
+        updateUsersTable(users);
+        populateTopUsers(users);
+        populateReferralData(users);
+      }, error => {
+        console.error('Users listener error:', error);
+        showToast('Error loading users data', 'error');
+      });
+
+      // Withdrawals collection listener
+      withdrawalsListener = db.collection('withdrawals').onSnapshot(snapshot => {
+        const withdrawals = [];
+        snapshot.forEach(doc => {
+          withdrawals.push({ id: doc.id, ...doc.data() });
+        });
+
+        updateWithdrawalsTable(withdrawals);
+        updateDashboardWithdrawalStats(withdrawals);
+        populateRecentActivity(withdrawals);
+      }, error => {
+        console.error('Withdrawals listener error:', error);
+        showToast('Error loading withdrawals data', 'error');
+      });
+
+      // Settings document listener
+      settingsListener = db.collection('settings').doc('appSettings').onSnapshot(doc => {
+        if (doc.exists) {
+          const settings = doc.data();
+          loadSettings(settings);
+        } else {
+          // Create default settings if they don't exist
+          const defaultSettings = {
+            pointsPerAd: 5,
+            dailyAdLimit: 5000,
+            minWithdrawalPoints: 400,
+            referrerBonus: 10,
+            refereeBonus: 5
+          };
+          db.collection('settings').doc('appSettings').set(defaultSettings);
+          loadSettings(defaultSettings);
+        }
+      }, error => {
+        console.error('Settings listener error:', error);
+        showToast('Error loading settings', 'error');
+      });
+    }
+
+    // Update dashboard stats
+    function updateDashboardStats(users) {
       document.getElementById('totalUsers').textContent = users.length;
       document.getElementById('totalPoints').textContent = users.reduce((sum, user) => sum + (user.points || 0), 0);
       document.getElementById('totalAds').textContent = users.reduce((sum, user) => sum + (user.totalAdsWatchedLifetime || 0), 0);
-      document.getElementById('pendingWithdrawals').textContent = withdrawalRequests.filter(req => req.status === 'pending').length;
-      
-      // Populate users table
-      populateUsersTable(users);
-      
-      // Populate withdrawal tables
-      populateWithdrawalTables(withdrawalRequests);
-      
-      // Populate referral data
-      populateReferralData(users);
-      
-      // Load settings
-      loadSettings();
-      
-      // Populate recent activity and top users
-      populateRecentActivity(users, withdrawalRequests);
-      populateTopUsers(users);
     }
 
-    // Populate users table
-    function populateUsersTable(users) {
+    // Update dashboard withdrawal stats
+    function updateDashboardWithdrawalStats(withdrawals) {
+      const pendingWithdrawals = withdrawals.filter(req => req.status === 'pending').length;
+      document.getElementById('pendingWithdrawals').textContent = pendingWithdrawals;
+    }
+
+    // Update users table
+    function updateUsersTable(users) {
       const usersTable = document.getElementById('usersTable');
       usersTable.innerHTML = '';
-      
+
       users.forEach(user => {
         const row = document.createElement('tr');
         row.innerHTML = `
-          <td>${user.telegramId || 'Guest'}</td>
-          <td>${user.name}</td>
+          <td>${user.id}</td>
+          <td>${user.firstName || ''} ${user.lastName || ''}</td>
           <td>${user.points || 0}</td>
           <td>${user.totalAdsWatchedLifetime || 0}</td>
           <td><span class="badge badge-success">Active</span></td>
           <td>
-            <button class="btn btn-sm btn-secondary" onclick="viewUserDetails('${user.telegramId || user.referralCode}')">
+            <button class="btn btn-sm btn-secondary" onclick="viewUserDetails('${user.id}')">
               <i class="fas fa-eye"></i> View
             </button>
-            <button class="btn btn-sm btn-danger" onclick="banUser('${user.telegramId || user.referralCode}')">
+            <button class="btn btn-sm btn-danger" onclick="banUser('${user.id}')">
               <i class="fas fa-ban"></i> Ban
             </button>
           </td>
@@ -1654,57 +1729,55 @@
       });
     }
 
-    // Populate withdrawal tables
-    function populateWithdrawalTables(requests) {
+    // Update withdrawals table
+    function updateWithdrawalsTable(withdrawals) {
       const pendingTable = document.getElementById('pendingWithdrawalsTable');
       const approvedTable = document.getElementById('approvedWithdrawalsTable');
       const rejectedTable = document.getElementById('rejectedWithdrawalsTable');
-      
+
       pendingTable.innerHTML = '';
       approvedTable.innerHTML = '';
       rejectedTable.innerHTML = '';
-      
-      requests.forEach(request => {
+
+      withdrawals.forEach(request => {
         const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${request.id}</td>
-          <td>${request.userName}</td>
-          <td>${request.amount} points</td>
-          <td>${request.method}</td>
-          <td>${request.account}</td>
-          <td>${new Date(request.date).toLocaleDateString()}</td>
-          <td>
-            ${request.status === 'pending' ? `
-              <button class="btn btn-sm btn-success" onclick="approveWithdrawal(${request.id})">
+
+        if (request.status === 'pending') {
+          row.innerHTML = `
+            <td>${request.id}</td>
+            <td>${request.userName || 'Unknown'}</td>
+            <td>${request.amount} points</td>
+            <td>${request.method}</td>
+            <td>${request.account || 'N/A'}</td>
+            <td>${new Date(request.requestDate).toLocaleDateString()}</td>
+            <td>
+              <button class="btn btn-sm btn-success" onclick="approveWithdrawal('${request.id}')">
                 <i class="fas fa-check"></i> Approve
               </button>
-              <button class="btn btn-sm btn-danger" onclick="rejectWithdrawal(${request.id})">
+              <button class="btn btn-sm btn-danger" onclick="rejectWithdrawal('${request.id}')">
                 <i class="fas fa-times"></i> Reject
               </button>
-            ` : ''}
-          </td>
-        `;
-        
-        if (request.status === 'pending') {
+            </td>
+          `;
           pendingTable.appendChild(row);
         } else if (request.status === 'approved') {
           row.innerHTML = `
             <td>${request.id}</td>
-            <td>${request.userName}</td>
+            <td>${request.userName || 'Unknown'}</td>
             <td>${request.amount} points</td>
             <td>${request.method}</td>
-            <td>${request.account}</td>
-            <td>${new Date(request.approvedDate || request.date).toLocaleDateString()}</td>
+            <td>${request.account || 'N/A'}</td>
+            <td>${new Date(request.approvedDate).toLocaleDateString()}</td>
           `;
           approvedTable.appendChild(row);
         } else if (request.status === 'rejected') {
           row.innerHTML = `
             <td>${request.id}</td>
-            <td>${request.userName}</td>
+            <td>${request.userName || 'Unknown'}</td>
             <td>${request.amount} points</td>
             <td>${request.method}</td>
             <td>${request.rejectionReason || 'No reason provided'}</td>
-            <td>${new Date(request.rejectedDate || request.date).toLocaleDateString()}</td>
+            <td>${new Date(request.rejectedDate).toLocaleDateString()}</td>
           `;
           rejectedTable.appendChild(row);
         }
@@ -1713,51 +1786,51 @@
 
     // Populate referral data
     function populateReferralData(users) {
-      const totalReferrals = users.reduce((sum, user) => sum + (user.referredUsers ? user.referredUsers.length : 0), 0);
+      const totalReferrals = users.reduce((sum, user) => sum + (user.referrals ? user.referrals.length : 0), 0);
       const totalBonusGiven = totalReferrals * 10; // Assuming 10 points per referral
       const conversionRate = users.length > 0 ? Math.round((totalReferrals / users.length) * 100) : 0;
-      
+
       document.getElementById('totalReferrals').textContent = totalReferrals;
       document.getElementById('totalBonusGiven').textContent = totalBonusGiven;
       document.getElementById('conversionRate').textContent = `${conversionRate}%`;
-      
+
       // Populate top referrers
       const topReferrers = users
-        .filter(user => user.referredUsers && user.referredUsers.length > 0)
-        .sort((a, b) => (b.referredUsers.length - a.referredUsers.length))
+        .filter(user => user.referrals && user.referrals.length > 0)
+        .sort((a, b) => (b.referrals.length - a.referrals.length))
         .slice(0, 10);
-      
+
       const topReferrersTable = document.getElementById('topReferrersTable');
       topReferrersTable.innerHTML = '';
-      
-      topReferrers.forEach((user, index) => {
+
+      topReferrers.forEach(user => {
         const row = document.createElement('tr');
         row.innerHTML = `
-          <td>${user.name}</td>
-          <td>${user.referredUsers.length}</td>
-          <td>${user.referredUsers.length * 10} points</td>
+          <td>${user.firstName || ''} ${user.lastName || ''}</td>
+          <td>${user.referrals.length}</td>
+          <td>${user.referrals.length * 10} points</td>
         `;
         topReferrersTable.appendChild(row);
       });
     }
 
     // Populate recent activity
-    function populateRecentActivity(users, withdrawals) {
+    function populateRecentActivity(withdrawals) {
       const activityTable = document.getElementById('recentActivityTable');
       activityTable.innerHTML = '';
-      
+
       // Get recent withdrawals (last 10)
       const recentWithdrawals = withdrawals
-        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .sort((a, b) => new Date(b.requestDate) - new Date(a.requestDate))
         .slice(0, 10);
-      
+
       recentWithdrawals.forEach(withdrawal => {
         const row = document.createElement('tr');
         row.innerHTML = `
-          <td>${withdrawal.userName}</td>
+          <td>${withdrawal.userName || 'Unknown'}</td>
           <td>Withdrawal Request</td>
           <td>${withdrawal.amount} points via ${withdrawal.method}</td>
-          <td>${new Date(withdrawal.date).toLocaleDateString()}</td>
+          <td>${new Date(withdrawal.requestDate).toLocaleDateString()}</td>
         `;
         activityTable.appendChild(row);
       });
@@ -1767,29 +1840,27 @@
     function populateTopUsers(users) {
       const topUsersTable = document.getElementById('topUsersTable');
       topUsersTable.innerHTML = '';
-      
+
       // Sort users by points and get top 10
       const topUsers = users
         .sort((a, b) => (b.points || 0) - (a.points || 0))
         .slice(0, 10);
-      
+
       topUsers.forEach((user, index) => {
         const row = document.createElement('tr');
         row.innerHTML = `
           <td>#${index + 1}</td>
-          <td>${user.name}</td>
+          <td>${user.firstName || ''} ${user.lastName || ''}</td>
           <td>${user.points || 0}</td>
           <td>${user.totalAdsWatchedLifetime || 0}</td>
-          <td>${user.referredUsers ? user.referredUsers.length : 0}</td>
+          <td>${user.referrals ? user.referrals.length : 0}</td>
         `;
         topUsersTable.appendChild(row);
       });
     }
 
     // Load application settings
-    function loadSettings() {
-      const settings = JSON.parse(localStorage.getItem('galaxyEarnSettings')) || {};
-      
+    function loadSettings(settings) {
       document.getElementById('pointsPerAd').value = settings.pointsPerAd || 5;
       document.getElementById('dailyAdLimit').value = settings.dailyAdLimit || 5000;
       document.getElementById('minWithdrawalPoints').value = settings.minWithdrawalPoints || 400;
@@ -1798,9 +1869,9 @@
     }
 
     // Save application settings
-    document.getElementById('appSettingsForm').addEventListener('submit', function(e) {
+    document.getElementById('appSettingsForm').addEventListener('submit', function (e) {
       e.preventDefault();
-      
+
       const settings = {
         pointsPerAd: parseInt(document.getElementById('pointsPerAd').value),
         dailyAdLimit: parseInt(document.getElementById('dailyAdLimit').value),
@@ -1808,147 +1879,230 @@
         referrerBonus: parseInt(document.getElementById('referrerBonus').value),
         refereeBonus: parseInt(document.getElementById('refereeBonus').value)
       };
-      
-      localStorage.setItem('galaxyEarnSettings', JSON.stringify(settings));
-      showToast('Settings saved successfully!', 'success');
+
+      db.collection('settings').doc('appSettings').set(settings)
+        .then(() => {
+          showToast('Settings saved successfully!', 'success');
+        })
+        .catch(error => {
+          console.error('Error saving settings:', error);
+          showToast('Error saving settings', 'error');
+        });
     });
 
     // Approve withdrawal
     function approveWithdrawal(requestId) {
-      const withdrawalRequests = JSON.parse(localStorage.getItem('galaxyEarnWithdrawalRequests')) || [];
-      const requestIndex = withdrawalRequests.findIndex(req => req.id === requestId);
-      
-      if (requestIndex !== -1) {
-        withdrawalRequests[requestIndex].status = 'approved';
-        withdrawalRequests[requestIndex].approvedDate = new Date().toISOString();
-        localStorage.setItem('galaxyEarnWithdrawalRequests', JSON.stringify(withdrawalRequests));
-        showToast('Withdrawal approved!', 'success');
-        loadAdminData(); // Refresh data
-      }
+      db.collection('withdrawals').doc(requestId).update({
+        status: 'approved',
+        approvedDate: new Date().toISOString()
+      })
+        .then(() => {
+          showToast('Withdrawal approved!', 'success');
+        })
+        .catch(error => {
+          console.error('Error approving withdrawal:', error);
+          showToast('Error approving withdrawal', 'error');
+        });
     }
 
     // Reject withdrawal
     function rejectWithdrawal(requestId) {
       const reason = prompt('Enter rejection reason:');
       if (reason === null) return; // User cancelled
-      
-      const withdrawalRequests = JSON.parse(localStorage.getItem('galaxyEarnWithdrawalRequests')) || [];
-      const requestIndex = withdrawalRequests.findIndex(req => req.id === requestId);
-      
-      if (requestIndex !== -1) {
-        withdrawalRequests[requestIndex].status = 'rejected';
-        withdrawalRequests[requestIndex].rejectionReason = reason;
-        withdrawalRequests[requestIndex].rejectedDate = new Date().toISOString();
-        localStorage.setItem('galaxyEarnWithdrawalRequests', JSON.stringify(withdrawalRequests));
-        showToast('Withdrawal rejected!', 'success');
-        loadAdminData(); // Refresh data
-      }
+
+      db.collection('withdrawals').doc(requestId).update({
+        status: 'rejected',
+        rejectionReason: reason,
+        rejectedDate: new Date().toISOString()
+      })
+        .then(() => {
+          showToast('Withdrawal rejected!', 'success');
+        })
+        .catch(error => {
+          console.error('Error rejecting withdrawal:', error);
+          showToast('Error rejecting withdrawal', 'error');
+        });
     }
 
     // View user details
     function viewUserDetails(userId) {
-      const allUsersData = JSON.parse(localStorage.getItem('galaxyEarnAllUsers')) || {};
-      const user = Object.values(allUsersData).find(u => 
-        u.telegramId === userId || u.referralCode === userId
-      );
-      
-      if (user) {
-        userDetailsContent.innerHTML = `
-          <img src="${user.photoUrl || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'}" 
-               alt="User Avatar" class="user-avatar-large">
-          
-          <div class="user-stats-grid">
-            <div class="user-stat-card">
-              <div class="user-stat-value">${user.points || 0}</div>
-              <div class="user-stat-label">Points</div>
-            </div>
-            <div class="user-stat-card">
-              <div class="user-stat-value">${user.totalAdsWatchedLifetime || 0}</div>
-              <div class="user-stat-label">Ads Watched</div>
-            </div>
-            <div class="user-stat-card">
-              <div class="user-stat-value">${user.adsWatchedToday || 0}</div>
-              <div class="user-stat-label">Today's Ads</div>
-            </div>
-            <div class="user-stat-card">
-              <div class="user-stat-value">${user.referredUsers ? user.referredUsers.length : 0}</div>
-              <div class="user-stat-label">Referrals</div>
-            </div>
-          </div>
-          
-          <div class="detail-row">
-            <span class="detail-label">Name:</span>
-            <span class="detail-value">${user.name}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Telegram ID:</span>
-            <span class="detail-value">${user.telegramId || 'Guest User'}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Referral Code:</span>
-            <span class="detail-value">${user.referralCode}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Referred By:</span>
-            <span class="detail-value">${user.referredBy || 'None'}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Last Ad Watch:</span>
-            <span class="detail-value">${user.lastAdWatchDate || 'Never'}</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Claimed Bonuses:</span>
-            <span class="detail-value">${user.claimedBonuses ? user.claimedBonuses.length : 0}</span>
-          </div>
-        `;
+      db.collection('users').doc(userId).get()
+        .then(doc => {
+          if (doc.exists) {
+            const user = { id: doc.id, ...doc.data() };
+            showUserModal(user);
+          } else {
+            showToast('User not found!', 'error');
+          }
+        })
+        .catch(error => {
+          console.error('Error getting user:', error);
+          showToast('Error loading user details', 'error');
+        });
+    }
+
+    // Show user details modal
+    function showUserModal(user) {
+      userDetailsContent.innerHTML = `
+        <img src="${user.photoUrl || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'}" 
+             alt="User Avatar" class="user-avatar-large">
         
-        userModal.classList.add('show');
-      } else {
-        showToast('User not found!', 'error');
-      }
+        <div class="user-stats-grid">
+          <div class="user-stat-card">
+            <div class="user-stat-value">${user.points || 0}</div>
+            <div class="user-stat-label">Points</div>
+          </div>
+          <div class="user-stat-card">
+            <div class="user-stat-value">${user.totalAdsWatchedLifetime || 0}</div>
+            <div class="user-stat-label">Ads Watched</div>
+          </div>
+          <div class="user-stat-card">
+            <div class="user-stat-value">${user.adsWatchedToday || 0}</div>
+            <div class="user-stat-label">Today's Ads</div>
+          </div>
+          <div class="user-stat-card">
+            <div class="user-stat-value">${user.referrals ? user.referrals.length : 0}</div>
+            <div class="user-stat-label">Referrals</div>
+          </div>
+        </div>
+        
+        <div class="detail-row">
+          <span class="detail-label">Name:</span>
+          <span class="detail-value">${user.firstName || ''} ${user.lastName || ''}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">User ID:</span>
+          <span class="detail-value">${user.id}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Telegram ID:</span>
+          <span class="detail-value">${user.telegramId || 'N/A'}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Referral Code:</span>
+          <span class="detail-value">${user.referralCode || 'N/A'}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Referred By:</span>
+          <span class="detail-value">${user.referredBy || 'None'}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Join Date:</span>
+          <span class="detail-value">${new Date(user.joinDate).toLocaleDateString()}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Last Active:</span>
+          <span class="detail-value">${new Date(user.lastActive).toLocaleDateString()}</span>
+        </div>
+      `;
+
+      userModal.classList.add('show');
     }
 
     // Ban user
     function banUser(userId) {
       if (confirm('Are you sure you want to ban this user?')) {
-        // In a real application, you would mark the user as banned in your data storage
-        showToast('User banned successfully!', 'success');
+        db.collection('users').doc(userId).update({
+          status: 'banned',
+          bannedDate: new Date().toISOString()
+        })
+          .then(() => {
+            showToast('User banned successfully!', 'success');
+          })
+          .catch(error => {
+            console.error('Error banning user:', error);
+            showToast('Error banning user', 'error');
+          });
       }
     }
 
     // Export data
-    document.getElementById('exportDataBtn').addEventListener('click', function() {
-      const usersData = localStorage.getItem('galaxyEarnAllUsers');
-      const withdrawalData = localStorage.getItem('galaxyEarnWithdrawalRequests');
-      const settingsData = localStorage.getItem('galaxyEarnSettings');
-      
-      const data = {
-        users: JSON.parse(usersData || '{}'),
-        withdrawals: JSON.parse(withdrawalData || '[]'),
-        settings: JSON.parse(settingsData || '{}')
-      };
-      
-      const dataStr = JSON.stringify(data, null, 2);
-      const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-      
-      const exportFileDefaultName = 'adlancer-data.json';
-      
-      const linkElement = document.createElement('a');
-      linkElement.setAttribute('href', dataUri);
-      linkElement.setAttribute('download', exportFileDefaultName);
-      linkElement.click();
-      
-      showToast('Data exported successfully!', 'success');
+    document.getElementById('exportDataBtn').addEventListener('click', function () {
+      Promise.all([
+        db.collection('users').get(),
+        db.collection('withdrawals').get(),
+        db.collection('settings').doc('appSettings').get()
+      ])
+        .then(([usersSnapshot, withdrawalsSnapshot, settingsDoc]) => {
+          const users = [];
+          usersSnapshot.forEach(doc => {
+            users.push({ id: doc.id, ...doc.data() });
+          });
+
+          const withdrawals = [];
+          withdrawalsSnapshot.forEach(doc => {
+            withdrawals.push({ id: doc.id, ...doc.data() });
+          });
+
+          const settings = settingsDoc.exists ? settingsDoc.data() : {};
+
+          const data = {
+            users,
+            withdrawals,
+            settings,
+            exportDate: new Date().toISOString()
+          };
+
+          const dataStr = JSON.stringify(data, null, 2);
+          const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+
+          const exportFileDefaultName = 'adlancer-data.json';
+
+          const linkElement = document.createElement('a');
+          linkElement.setAttribute('href', dataUri);
+          linkElement.setAttribute('download', exportFileDefaultName);
+          linkElement.click();
+
+          showToast('Data exported successfully!', 'success');
+        })
+        .catch(error => {
+          console.error('Error exporting data:', error);
+          showToast('Error exporting data', 'error');
+        });
     });
 
     // Reset data
-    document.getElementById('resetDataBtn').addEventListener('click', function() {
+    document.getElementById('resetDataBtn').addEventListener('click', function () {
       if (confirm('WARNING: This will reset ALL data. Are you absolutely sure?')) {
-        localStorage.removeItem('galaxyEarnAllUsers');
-        localStorage.removeItem('galaxyEarnWithdrawalRequests');
-        localStorage.removeItem('galaxyEarnSettings');
-        showToast('All data has been reset!', 'success');
-        loadAdminData(); // Refresh to show empty state
+        // This is a dangerous operation - in a real app, you'd want additional safeguards
+        const batch = db.batch();
+
+        // Delete all users
+        db.collection('users').get().then(snapshot => {
+          snapshot.forEach(doc => {
+            batch.delete(doc.ref);
+          });
+
+          // Delete all withdrawals
+          return db.collection('withdrawals').get();
+        })
+          .then(snapshot => {
+            snapshot.forEach(doc => {
+              batch.delete(doc.ref);
+            });
+
+            // Reset settings to defaults
+            const defaultSettings = {
+              pointsPerAd: 5,
+              dailyAdLimit: 5000,
+              minWithdrawalPoints: 400,
+              referrerBonus: 10,
+              refereeBonus: 5
+            };
+
+            const settingsRef = db.collection('settings').doc('appSettings');
+            batch.set(settingsRef, defaultSettings);
+
+            // Commit the batch
+            return batch.commit();
+          })
+          .then(() => {
+            showToast('All data has been reset!', 'success');
+          })
+          .catch(error => {
+            console.error('Error resetting data:', error);
+            showToast('Error resetting data', 'error');
+          });
       }
     });
 
@@ -1960,15 +2114,9 @@
       window.addEventListener('resize', checkScreenSize);
     }
 
-    // Listen for storage changes to refresh data when main app updates
-    window.addEventListener('storage', (e) => {
-      if (e.key === 'galaxyEarnAllUsers' || e.key === 'galaxyEarnWithdrawalRequests') {
-        loadAdminData();
-      }
-    });
-
     // Run initialization when DOM is loaded
     document.addEventListener('DOMContentLoaded', initAdminPanel);
   </script>
 </body>
+
 </html>
