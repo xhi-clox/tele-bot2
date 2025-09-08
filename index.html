@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+  <!-- Firebase (match admin panel compat SDKs) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script src='//libtl.com/sdk.js' data-zone='9818146' data-sdk='show_9818146'></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>AdLancer - Earn Money Watching Ads</title>
@@ -517,11 +521,11 @@
       .referral-input-group {
         flex-direction: row;
       }
-      
+
       .referral-input {
         flex: 1;
       }
-      
+
       .copy-btn {
         width: auto;
       }
@@ -638,7 +642,9 @@
     }
 
     @keyframes spin {
-      to { transform: rotate(360deg); }
+      to {
+        transform: rotate(360deg);
+      }
     }
 
     .ad-status {
@@ -961,24 +967,24 @@
         flex-direction: column;
         text-align: center;
       }
-      
+
       .profile-avatar {
         margin-right: 0;
         margin-bottom: 12px;
       }
-      
+
       .profile-stats {
         grid-template-rows: 1fr;
       }
-      
+
       .stat-item:not(:last-child)::after {
         display: none;
       }
-      
+
       .stat-item {
         border-bottom: 1px solid var(--bg-tertiary);
       }
-      
+
       .stat-item:last-child {
         border-bottom: none;
       }
@@ -1001,19 +1007,36 @@
 
     /* Animation for elements */
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
-    .task-card, .profile-card, .bonus-card {
+    .task-card,
+    .profile-card,
+    .bonus-card {
       animation: fadeIn 0.4s ease forwards;
     }
 
     /* Pulse animation for buttons */
     @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.03); }
-      100% { transform: scale(1); }
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.03);
+      }
+
+      100% {
+        transform: scale(1);
+      }
     }
 
     .btn-pulse {
@@ -1021,6 +1044,7 @@
     }
   </style>
 </head>
+
 <body class="dark-mode">
   <div class="app-wrapper">
     <!-- Header -->
@@ -1040,10 +1064,8 @@
     <div class="profile-section">
       <div class="profile-card">
         <div class="profile-header">
-          <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" 
-               alt="Profile" 
-               class="profile-avatar" 
-               id="profileAvatar">
+          <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+            alt="Profile" class="profile-avatar" id="profileAvatar">
           <div class="profile-info">
             <h2 class="profile-name" id="profileNameDisplay">
               Guest User
@@ -1138,6 +1160,23 @@
 
   <!-- JavaScript -->
   <script>
+    // === Firebase Initialization (synchronized with admin panel) ===
+    const firebaseConfig = {
+      // Replace with the same config you put in adminp.html
+      apiKey: "AIzaSyBJdfIANk4BLn4PaQhH2n45kMRkvAZ-jM4",
+      authDomain: "telebot-xhiclox.firebaseapp.com",
+      projectId: "telebot-xhiclox",
+      storageBucket: "telebot-xhiclox.firebasestorage.app",
+      messagingSenderId: "246768497610",
+      appId: "1:246768497610:web:69de7ab2ed0b7cdf145533"
+    };
+    try {
+      if (!firebase.apps?.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+    } catch (e) { console.warn('Firebase init failed (index):', e); }
+    const db = (typeof firebase !== 'undefined' && firebase.firestore) ? firebase.firestore() : null;
+
     // Configuration - Load from localStorage or use defaults
     const APP_NAME = "AdLancer";
     const defaultSettings = {
@@ -1147,13 +1186,14 @@
       referrerBonus: 10,
       refereeBonus: 5
     };
-    
-    const settings = JSON.parse(localStorage.getItem('galaxyEarnSettings')) || defaultSettings;
-    const ADS_PER_DAY_LIMIT = settings.dailyAdLimit || 5000;
-    const POINTS_PER_AD = settings.pointsPerAd || 5;
-    const MIN_WITHDRAW_POINTS = settings.minWithdrawalPoints || 400;
-    const REFERRAL_BONUS_REFERRER = settings.referrerBonus || 10;
-    const REFERRAL_BONUS_REFEREE = settings.refereeBonus || 5;
+
+    // Make these variables dynamic so they can be updated
+    let settings = JSON.parse(localStorage.getItem('galaxyEarnSettings')) || defaultSettings;
+    let ADS_PER_DAY_LIMIT = settings.dailyAdLimit || 5000;
+    let POINTS_PER_AD = settings.pointsPerAd || 5;
+    let MIN_WITHDRAW_POINTS = settings.minWithdrawalPoints || 400;
+    let REFERRAL_BONUS_REFERRER = settings.referrerBonus || 10;
+    let REFERRAL_BONUS_REFEREE = settings.refereeBonus || 5;
     const MONETAG_AD_FUNCTION_NAME = 'show_9818146';
     const TELEGRAM_BOT_TOKEN = "7525170440:AAFF9DO5-OEAdwlo5nrLcM0XFc16Juuh-qw";
     const TELEGRAM_CHAT_ID = "8314434724";
@@ -1168,6 +1208,13 @@
       { id: 'tg_community', name: 'Telegram Community', link: " ", reward: 5, icon: 'fab fa-telegram' },
       { id: 'wa_community', name: 'Youtube Community', link: " ", reward: 10, icon: 'fab fa-youtube' }
     ];
+
+    // Deprecated custom API base (kept for backward compatibility)
+    const STORED_API_BASE = localStorage.getItem('API_BASE') || '';
+    const DEFAULT_PROJECT_URL = '';
+    const SHOULD_USE_PROJECT_URL = location.host.endsWith('t.me') || location.protocol === 'file:';
+    const API_BASE = (SHOULD_USE_PROJECT_URL ? (STORED_API_BASE || DEFAULT_PROJECT_URL) : location.origin) || location.origin;
+    window.setApiBase = function (url) { try { localStorage.setItem('API_BASE', url); } catch (e) { } };
 
     // DOM Elements
     const themeToggleBtn = document.getElementById('themeToggle');
@@ -1217,7 +1264,7 @@
 
     // Generate a unique device ID for each user
     function generateDeviceId() {
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
       });
@@ -1228,67 +1275,121 @@
       return Math.random().toString(36).substring(2, 10).toUpperCase();
     }
 
-    // Load user state from localStorage or Telegram WebApp
-    function loadUserState() {
+    // Helpers to map between local user object and Firestore schema used in admin panel
+    function splitName(full) {
+      const name = (full || '').trim();
+      if (!name) return { firstName: '', lastName: '' };
+      const parts = name.split(/\s+/);
+      return { firstName: parts[0] || '', lastName: parts.slice(1).join(' ') || '' };
+    }
+
+    function userToFirestoreDoc(deviceId, user) {
+      const names = splitName(user.name);
+      return {
+        firstName: names.firstName,
+        lastName: names.lastName,
+        photoUrl: user.photoUrl || '',
+        telegramId: user.telegramId || null,
+        points: user.points || 0,
+        adsWatchedToday: user.adsWatchedToday || 0,
+        totalAdsWatchedLifetime: user.totalAdsWatchedLifetime || 0,
+        lastAdWatchDate: user.lastAdWatchDate || null,
+        referralCode: user.referralCode || '',
+        referredBy: user.referredBy || null,
+        referrals: Array.isArray(user.referredUsers) ? user.referredUsers : [],
+        status: 'active',
+        joinDate: user.joinDate || new Date().toISOString(),
+        lastActive: new Date().toISOString(),
+        deviceId: deviceId
+      };
+    }
+
+    function firestoreDocToUser(doc) {
+      const data = doc || {};
+      return {
+        name: [data.firstName || '', data.lastName || ''].filter(Boolean).join(' ') || 'Guest User',
+        telegramId: data.telegramId || null,
+        photoUrl: data.photoUrl || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+        points: data.points || 0,
+        adsWatchedToday: data.adsWatchedToday || 0,
+        totalAdsWatchedLifetime: data.totalAdsWatchedLifetime || 0,
+        lastAdWatchDate: data.lastAdWatchDate || null,
+        claimedBonuses: Array.isArray(data.claimedBonuses) ? data.claimedBonuses : [],
+        referralCode: data.referralCode || generateReferralCode(),
+        referredBy: data.referredBy || null,
+        referredUsers: Array.isArray(data.referrals) ? data.referrals : []
+      };
+    }
+
+    // Load user state from Firestore (preferred), fallback to localStorage, also Telegram WebApp mapping
+    async function loadUserState() {
       let deviceId = localStorage.getItem('galaxyEarnDeviceId');
       if (!deviceId) {
         deviceId = generateDeviceId();
         localStorage.setItem('galaxyEarnDeviceId', deviceId);
       }
 
-      let allUsersData = JSON.parse(localStorage.getItem('galaxyEarnAllUsers')) || {};
-
-      if (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe.user) {
-        const tgUser = Telegram.WebApp.initDataUnsafe.user;
-        const existingUser = Object.values(allUsersData).find(user => user.telegramId === tgUser.id);
-
-        if (existingUser) {
-          currentUser = existingUser;
-          const existingDeviceIdForTgUser = Object.keys(allUsersData).find(id => allUsersData[id].telegramId === tgUser.id);
-          if (existingDeviceIdForTgUser && existingDeviceIdForTgUser !== deviceId) {
-            localStorage.setItem('galaxyEarnDeviceId', existingDeviceIdForTgUser);
-            deviceId = existingDeviceIdForTgUser;
-            currentUser = allUsersData[deviceId];
+      try {
+        // If Telegram user, try to map to existing user by telegramId
+        if (db && window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe.user) {
+          const tgUser = Telegram.WebApp.initDataUnsafe.user;
+          const snapshot = await db.collection('users').where('telegramId', '==', tgUser.id).limit(1).get();
+          if (!snapshot.empty) {
+            const doc = snapshot.docs[0];
+            localStorage.setItem('galaxyEarnDeviceId', doc.id);
+            deviceId = doc.id;
+            currentUser = firestoreDocToUser(doc.data());
           } else {
-            Object.assign(currentUser, {
-              name: `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() || currentUser.name,
-              photoUrl: tgUser.photo_url || currentUser.photoUrl,
-              telegramId: tgUser.id
-            });
-            allUsersData[deviceId] = currentUser;
-            localStorage.setItem('galaxyEarnAllUsers', JSON.stringify(allUsersData));
+            // Create new user
+            currentUser = {
+              name: `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() || `User${tgUser.id}`,
+              telegramId: tgUser.id,
+              photoUrl: tgUser.photo_url || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+              points: 0,
+              adsWatchedToday: 0,
+              totalAdsWatchedLifetime: 0,
+              lastAdWatchDate: null,
+              claimedBonuses: [],
+              referralCode: generateReferralCode(),
+              referredBy: null,
+              referredUsers: [],
+              joinDate: new Date().toISOString()
+            };
+            await saveUserState();
           }
-        } else {
-          currentUser = {
-            name: `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() || `User${tgUser.id}`,
-            telegramId: tgUser.id,
-            photoUrl: tgUser.photo_url || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
-            points: 0,
-            adsWatchedToday: 0,
-            totalAdsWatchedLifetime: 0,
-            lastAdWatchDate: null,
-            claimedBonuses: [],
-            referralCode: generateReferralCode(),
-            referredBy: null,
-            referredUsers: []
-          };
-          allUsersData[deviceId] = currentUser;
-          localStorage.setItem('galaxyEarnAllUsers', JSON.stringify(allUsersData));
+        } else if (db) {
+          // Guest device: try to load by deviceId
+          const doc = await db.collection('users').doc(deviceId).get();
+          if (doc.exists) {
+            currentUser = firestoreDocToUser(doc.data());
+          } else {
+            currentUser = {
+              name: 'Guest User',
+              telegramId: null,
+              photoUrl: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+              points: 0,
+              adsWatchedToday: 0,
+              totalAdsWatchedLifetime: 0,
+              lastAdWatchDate: null,
+              claimedBonuses: [],
+              referralCode: generateReferralCode(),
+              referredBy: null,
+              referredUsers: [],
+              joinDate: new Date().toISOString()
+            };
+            await saveUserState();
+          }
         }
-      } else {
+      } catch (e) {
+        console.warn('Firestore load failed, using localStorage fallback:', e);
+        let allUsersData = JSON.parse(localStorage.getItem('galaxyEarnAllUsers')) || {};
         if (!allUsersData[deviceId]) {
           allUsersData[deviceId] = {
-            name: 'Guest User',
-            telegramId: null,
+            name: 'Guest User', telegramId: null,
             photoUrl: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
-            points: 0,
-            adsWatchedToday: 0,
-            totalAdsWatchedLifetime: 0,
-            lastAdWatchDate: null,
-            claimedBonuses: [],
-            referralCode: generateReferralCode(),
-            referredBy: null,
-            referredUsers: []
+            points: 0, adsWatchedToday: 0, totalAdsWatchedLifetime: 0,
+            lastAdWatchDate: null, claimedBonuses: [], referralCode: generateReferralCode(),
+            referredBy: null, referredUsers: []
           };
           localStorage.setItem('galaxyEarnAllUsers', JSON.stringify(allUsersData));
         }
@@ -1311,35 +1412,72 @@
         }
       }
 
-      updateUI();
+      // Check for daily reset
+      const today = new Date().toLocaleDateString();
+      if (currentUser.lastAdWatchDate !== today) {
+        currentUser.adsWatchedToday = 0;
+        currentUser.lastAdWatchDate = today;
+        saveUserState();
+      }
+
+      // Reload settings to ensure they're up to date
+      reloadSettings();
     }
 
     // Apply referral code
-    function applyReferral(referrerCode) {
+    async function applyReferral(referrerCode) {
       if (referrerCode === currentUser.referralCode || currentUser.referredBy) {
         return;
       }
+      try {
+        let referrerUserDoc = null;
+        if (db) {
+          const q = await db.collection('users').where('referralCode', '==', referrerCode).limit(1).get();
+          if (!q.empty) referrerUserDoc = { id: q.docs[0].id, data: q.docs[0].data() };
+        }
+        if (referrerUserDoc) {
+          const referrerUser = referrerUserDoc.data;
+          currentUser.points += REFERRAL_BONUS_REFEREE;
+          currentUser.referredBy = referrerCode;
 
-      let allUsersData = JSON.parse(localStorage.getItem('galaxyEarnAllUsers')) || {};
+          referrerUser.points = (referrerUser.points || 0) + REFERRAL_BONUS_REFERRER;
+          const referralsArr = Array.isArray(referrerUser.referrals) ? referrerUser.referrals : [];
+          referralsArr.push(currentUser.referralCode);
+
+          await saveUserState();
+          if (db) {
+            await db.collection('users').doc(referrerUserDoc.id).set({
+              points: referrerUser.points,
+              referrals: referralsArr,
+              lastActive: new Date().toISOString()
+            }, { merge: true });
+          }
+          showToast(`+${REFERRAL_BONUS_REFEREE} bonus points for joining via referral!`);
+          sendTelegramReferralNotification(
+            currentUser.name,
+            currentUser.referralCode,
+            [referrerUser.firstName || '', referrerUser.lastName || ''].filter(Boolean).join(' '),
+            referrerCode
+          );
+          updateUI();
+          return;
+        }
+      } catch (e) {
+        console.warn('Referral via Firestore failed, will try local fallback:', e);
+      }
+
+      // Fallback: localStorage lookup
+      const allUsersData = JSON.parse(localStorage.getItem('galaxyEarnAllUsers')) || {};
       const referrerUser = Object.values(allUsersData).find(user => user.referralCode === referrerCode);
-
       if (referrerUser) {
         currentUser.points += REFERRAL_BONUS_REFEREE;
         currentUser.referredBy = referrerCode;
-
-        referrerUser.points += REFERRAL_BONUS_REFERRER;
-        if (referrerUser.referredUsers) {
-          referrerUser.referredUsers.push(currentUser.referralCode);
-        } else {
-          referrerUser.referredUsers = [currentUser.referralCode];
-        }
-
+        referrerUser.points = (referrerUser.points || 0) + REFERRAL_BONUS_REFERRER;
+        if (referrerUser.referredUsers) { referrerUser.referredUsers.push(currentUser.referralCode); }
+        else { referrerUser.referredUsers = [currentUser.referralCode]; }
         const referrerDeviceId = Object.keys(allUsersData).find(id => allUsersData[id].referralCode === referrerCode);
-        if (referrerDeviceId) {
-          allUsersData[referrerDeviceId] = referrerUser;
-        }
-
-        localStorage.setItem('galaxyEarnAllUsers', JSON.stringify(allUsersData));
+        if (referrerDeviceId) { allUsersData[referrerDeviceId] = referrerUser; }
+        await saveUserState();
         showToast(`+${REFERRAL_BONUS_REFEREE} bonus points for joining via referral!`);
         sendTelegramReferralNotification(
           currentUser.name,
@@ -1362,15 +1500,32 @@
       }
     }
 
-    // Reload settings from localStorage
+    // Reload settings from Firestore (preferred) or localStorage
     function reloadSettings() {
-      const newSettings = JSON.parse(localStorage.getItem('galaxyEarnSettings')) || defaultSettings;
-      // Update global variables
-      window.ADS_PER_DAY_LIMIT = newSettings.dailyAdLimit || 5000;
-      window.POINTS_PER_AD = newSettings.pointsPerAd || 5;
-      window.MIN_WITHDRAW_POINTS = newSettings.minWithdrawalPoints || 400;
-      window.REFERRAL_BONUS_REFERRER = newSettings.referrerBonus || 10;
-      window.REFERRAL_BONUS_REFEREE = newSettings.refereeBonus || 5;
+      const local = JSON.parse(localStorage.getItem('galaxyEarnSettings')) || defaultSettings;
+      settings = local;
+      ADS_PER_DAY_LIMIT = settings.dailyAdLimit || 5000;
+      POINTS_PER_AD = settings.pointsPerAd || 5;
+      MIN_WITHDRAW_POINTS = settings.minWithdrawalPoints || 400;
+      REFERRAL_BONUS_REFERRER = settings.referrerBonus || 10;
+      REFERRAL_BONUS_REFEREE = settings.refereeBonus || 5;
+      if (db) {
+        try {
+          db.collection('settings').doc('appSettings').get().then(doc => {
+            if (doc.exists) {
+              const fs = doc.data();
+              settings = Object.assign({}, settings, fs);
+              localStorage.setItem('galaxyEarnSettings', JSON.stringify(settings));
+              ADS_PER_DAY_LIMIT = settings.dailyAdLimit || ADS_PER_DAY_LIMIT;
+              POINTS_PER_AD = settings.pointsPerAd || POINTS_PER_AD;
+              MIN_WITHDRAW_POINTS = settings.minWithdrawalPoints || MIN_WITHDRAW_POINTS;
+              REFERRAL_BONUS_REFERRER = settings.referrerBonus || REFERRAL_BONUS_REFERRER;
+              REFERRAL_BONUS_REFEREE = settings.refereeBonus || REFERRAL_BONUS_REFEREE;
+              updateUI();
+            }
+          });
+        } catch (e) { /* ignore */ }
+      }
       updateUI();
     }
 
@@ -1380,21 +1535,60 @@
         Telegram.WebApp.expand();
         Telegram.WebApp.enableClosingConfirmation();
       }
-      initializeSettings();
-      loadUserState();
-      applyTheme(localStorage.getItem('galaxyEarnTheme') || 'dark');
 
-      navigateTo('home');
+      // Function to check if all DOM elements are ready
+      function checkDOMReady() {
+        const requiredElements = [
+          'profileNameDisplay', 'userPointsDisplay', 'adsWatchedToday',
+          'adsLeftToday', 'totalAdsWatched', 'mainContent'
+        ];
+
+        const missingElements = requiredElements.filter(id => !document.getElementById(id));
+
+        if (missingElements.length > 0) {
+          console.log('Waiting for DOM elements:', missingElements);
+          setTimeout(checkDOMReady, 50);
+          return;
+        }
+
+        console.log('All DOM elements ready, initializing app');
+
+        // Initialize settings first
+        initializeSettings();
+
+        // Reload settings to ensure they're current
+        reloadSettings();
+
+        // Load user state
+        loadUserState();
+
+        // Apply theme
+        applyTheme(localStorage.getItem('galaxyEarnTheme') || 'dark');
+
+        // Navigate to home page
+        navigateTo('home');
+
+        // Force update stats immediately after initialization
+        setTimeout(() => {
+          console.log('Running immediate stats update');
+          if (typeof window.forceUpdateStats === 'function') {
+            window.forceUpdateStats();
+          }
+        }, 200);
+      }
+
+      // Start checking for DOM readiness
+      checkDOMReady();
 
       themeToggleBtn.addEventListener('click', toggleTheme);
       document.getElementById('editNameBtn').addEventListener('click', promptForNewName);
       adCloseBtn.addEventListener('click', closeAdModalAndReward);
-      
+
       // Sidebar navigation
       menuButton.addEventListener('click', openSidebar);
       closeSidebar.addEventListener('click', closeSidebarFunc);
       sidebarOverlay.addEventListener('click', closeSidebarFunc);
-      
+
       navItems.forEach(item => {
         item.addEventListener('click', (e) => {
           e.preventDefault();
@@ -1404,12 +1598,170 @@
         });
       });
 
-      // Listen for storage changes to reload settings when admin panel updates them
-      window.addEventListener('storage', (e) => {
-        if (e.key === 'galaxyEarnSettings') {
-          reloadSettings();
+      // Firestore realtime settings sync (live with admin panel)
+      if (db) {
+        try {
+          db.collection('settings').doc('appSettings').onSnapshot(doc => {
+            if (doc.exists) {
+              const fs = doc.data();
+              localStorage.setItem('galaxyEarnSettings', JSON.stringify(fs));
+              settings = fs;
+              ADS_PER_DAY_LIMIT = settings.dailyAdLimit || 5000;
+              POINTS_PER_AD = settings.pointsPerAd || 5;
+              MIN_WITHDRAW_POINTS = settings.minWithdrawalPoints || 400;
+              REFERRAL_BONUS_REFERRER = settings.referrerBonus || 10;
+              REFERRAL_BONUS_REFEREE = settings.refereeBonus || 5;
+              updateUI();
+            }
+          });
+        } catch (e) { console.warn('Settings listener failed:', e); }
+      }
+
+      // Periodic UI update to ensure stats stay current
+      setInterval(() => {
+        const today = new Date().toLocaleDateString();
+        if (currentUser.lastAdWatchDate !== today) {
+          currentUser.adsWatchedToday = 0;
+          currentUser.lastAdWatchDate = today;
+          saveUserState();
+          updateUI();
         }
-      });
+      }, 30000); // Check every 30 seconds
+
+      // Add global refresh function for debugging
+      window.refreshApp = function () {
+        console.log('Manual refresh triggered');
+        reloadSettings();
+        loadUserState();
+        navigateTo('home');
+      };
+
+      // Add function to reset user data if needed
+      window.resetUserData = function () {
+        console.log('Resetting user data');
+        const deviceId = localStorage.getItem('galaxyEarnDeviceId');
+        let allUsersData = JSON.parse(localStorage.getItem('galaxyEarnAllUsers')) || {};
+        allUsersData[deviceId] = {
+          name: 'Guest User',
+          telegramId: null,
+          photoUrl: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+          points: 0,
+          adsWatchedToday: 0,
+          totalAdsWatchedLifetime: 0,
+          lastAdWatchDate: null,
+          claimedBonuses: [],
+          referralCode: generateReferralCode(),
+          referredBy: null,
+          referredUsers: []
+        };
+        localStorage.setItem('galaxyEarnAllUsers', JSON.stringify(allUsersData));
+        loadUserState();
+        navigateTo('home');
+      };
+
+      // Debug function for Telegram Mini App
+      window.debugTelegramApp = function () {
+        console.log('=== TELEGRAM MINI APP DEBUG ===');
+        console.log('Telegram WebApp available:', !!window.Telegram?.WebApp);
+        if (window.Telegram?.WebApp) {
+          console.log('Telegram WebApp data:', {
+            initData: window.Telegram.WebApp.initData,
+            initDataUnsafe: window.Telegram.WebApp.initDataUnsafe,
+            version: window.Telegram.WebApp.version,
+            platform: window.Telegram.WebApp.platform,
+            colorScheme: window.Telegram.WebApp.colorScheme,
+            themeParams: window.Telegram.WebApp.themeParams
+          });
+        }
+        console.log('Current user data:', currentUser);
+        console.log('Device ID:', localStorage.getItem('galaxyEarnDeviceId'));
+        console.log('All users in localStorage:', JSON.parse(localStorage.getItem('galaxyEarnAllUsers') || '{}'));
+      };
+
+      // Test API connection
+      window.testAPIConnection = async function () {
+        console.log('=== TESTING API CONNECTION ===');
+        try {
+          const response = await fetch(`${API_BASE}/api/get-users`);
+          console.log('API Response status:', response.status);
+          const data = await response.json();
+          console.log('API Response data:', data);
+          return data;
+        } catch (error) {
+          console.error('API Connection failed:', error);
+          return null;
+        }
+      };
+
+      // Add function to force update stats display
+      window.forceUpdateStats = function () {
+        console.log('Force updating stats display');
+        console.log('Current user data:', currentUser);
+        console.log('Settings:', { ADS_PER_DAY_LIMIT, POINTS_PER_AD });
+
+        const adsWatchedEl = document.getElementById('adsWatchedToday');
+        const adsLeftEl = document.getElementById('adsLeftToday');
+        const totalAdsEl = document.getElementById('totalAdsWatched');
+        const pointsEl = document.getElementById('userPointsDisplay');
+
+        console.log('Elements found:', {
+          adsWatchedEl: !!adsWatchedEl,
+          adsLeftEl: !!adsLeftEl,
+          totalAdsEl: !!totalAdsEl,
+          pointsEl: !!pointsEl
+        });
+
+        if (adsWatchedEl) {
+          adsWatchedEl.textContent = currentUser.adsWatchedToday;
+          console.log('Updated adsWatchedToday to:', currentUser.adsWatchedToday);
+        }
+        if (adsLeftEl) {
+          const adsLeft = ADS_PER_DAY_LIMIT - currentUser.adsWatchedToday;
+          adsLeftEl.textContent = adsLeft;
+          console.log('Updated adsLeftToday to:', adsLeft);
+        }
+        if (totalAdsEl) {
+          totalAdsEl.textContent = currentUser.totalAdsWatchedLifetime;
+          console.log('Updated totalAdsWatched to:', currentUser.totalAdsWatchedLifetime);
+        }
+        if (pointsEl) {
+          pointsEl.innerHTML = `<i class="fas fa-coins"></i> ${currentUser.points} Points`;
+          console.log('Updated points to:', currentUser.points);
+        }
+
+        console.log('Stats update completed');
+      };
+
+      // Add a simple test function to verify elements
+      window.testStats = function () {
+        console.log('Testing stats elements...');
+        const elements = {
+          adsWatchedToday: document.getElementById('adsWatchedToday'),
+          adsLeftToday: document.getElementById('adsLeftToday'),
+          totalAdsWatched: document.getElementById('totalAdsWatched'),
+          userPointsDisplay: document.getElementById('userPointsDisplay')
+        };
+
+        console.log('Element test results:', elements);
+
+        // Try to set test values
+        if (elements.adsWatchedToday) {
+          elements.adsWatchedToday.textContent = 'TEST';
+          console.log('Set adsWatchedToday to TEST');
+        }
+        if (elements.adsLeftToday) {
+          elements.adsLeftToday.textContent = 'TEST';
+          console.log('Set adsLeftToday to TEST');
+        }
+        if (elements.totalAdsWatched) {
+          elements.totalAdsWatched.textContent = 'TEST';
+          console.log('Set totalAdsWatched to TEST');
+        }
+        if (elements.userPointsDisplay) {
+          elements.userPointsDisplay.innerHTML = '<i class="fas fa-coins"></i> TEST Points';
+          console.log('Set userPointsDisplay to TEST');
+        }
+      };
     });
 
     // Sidebar functions
@@ -1437,6 +1789,18 @@
 
     // Update UI elements
     function updateUI() {
+      // Check if elements exist before updating
+      if (!profileNameDisplay || !userPointsDisplay || !adsWatchedTodayEl || !adsLeftTodayEl || !totalAdsWatchedEl) {
+        console.error('DOM elements not found:', {
+          profileNameDisplay: !!profileNameDisplay,
+          userPointsDisplay: !!userPointsDisplay,
+          adsWatchedTodayEl: !!adsWatchedTodayEl,
+          adsLeftTodayEl: !!adsLeftTodayEl,
+          totalAdsWatchedEl: !!totalAdsWatchedEl
+        });
+        return;
+      }
+
       profileNameDisplay.innerHTML = `
         ${currentUser.name}
         <i class="fas fa-check-circle verified-badge"></i>
@@ -1451,6 +1815,15 @@
       adsLeftTodayEl.textContent = ADS_PER_DAY_LIMIT - currentUser.adsWatchedToday;
       totalAdsWatchedEl.textContent = currentUser.totalAdsWatchedLifetime;
 
+      // Debug logging for UI update
+      console.log('UI Updated:', {
+        points: currentUser.points,
+        adsWatchedToday: currentUser.adsWatchedToday,
+        adsLeftToday: ADS_PER_DAY_LIMIT - currentUser.adsWatchedToday,
+        totalAdsWatched: currentUser.totalAdsWatchedLifetime,
+        ADS_PER_DAY_LIMIT
+      });
+
       if (currentUser.photoUrl) {
         profileAvatar.src = currentUser.photoUrl;
       }
@@ -1458,6 +1831,11 @@
       const watchBtn = document.getElementById('watchDailyAdBtn');
       if (watchBtn) {
         watchBtn.disabled = (ADS_PER_DAY_LIMIT - currentUser.adsWatchedToday <= 0);
+      }
+
+      // Force update stats display as backup
+      if (typeof window.forceUpdateStats === 'function') {
+        window.forceUpdateStats();
       }
     }
 
@@ -1473,6 +1851,9 @@
 
     // Navigation function
     function navigateTo(page) {
+      // Reload settings to ensure they're current before rendering
+      reloadSettings();
+
       // Update active nav item
       navItems.forEach(item => {
         item.classList.remove('active');
@@ -1496,7 +1877,7 @@
     function renderHomePage() {
       const adsLeft = ADS_PER_DAY_LIMIT - currentUser.adsWatchedToday;
       const progressPercent = (currentUser.adsWatchedToday / ADS_PER_DAY_LIMIT) * 100;
-      
+
       mainContent.innerHTML = `
         <div class="task-card">
           <div class="task-header">
@@ -1538,7 +1919,7 @@
         <div class="developer-footer">
           Developed by <a href="${DEVELOPER_TELEGRAM_PROFILE_LINK}" target="_blank" class="developer-link">XHI CLOX</a>
         </div>`;
-        
+
       if (adsLeft > 0) {
         document.getElementById('watchDailyAdBtn').addEventListener('click', handleWatchDailyAd);
       }
@@ -1561,12 +1942,12 @@
               </div>
             </div>
             <div class="bonus-action">
-              ${ linkIsValid ?
-                `<a href="${channel.link}" target="_blank" class="bonus-btn ${isClaimed ? 'claimed' : 'primary'}" data-channel-id="${channel.id}" data-reward="${channel.reward}" onclick="handleBonusLinkClick(event, this)">
+              ${linkIsValid ?
+            `<a href="${channel.link}" target="_blank" class="bonus-btn ${isClaimed ? 'claimed' : 'primary'}" data-channel-id="${channel.id}" data-reward="${channel.reward}" onclick="handleBonusLinkClick(event, this)">
                   ${isClaimed ? 'Claimed' : 'Join'}
                 </a>` :
-                `<span class="bonus-btn secondary">Coming Soon</span>`
-              }
+            `<span class="bonus-btn secondary">Coming Soon</span>`
+          }
             </div>
           </div>`;
       }).join('');
@@ -1927,18 +2308,27 @@
 
       // Store withdrawal request for admin panel
       const withdrawalRequest = {
-        id: Date.now(),
+        id: `${Date.now()}`,
         userName: currentUser.name,
         amount: amount,
         method: method,
         account: account,
-        date: new Date().toISOString(),
+        requestDate: new Date().toISOString(),
         status: 'pending'
       };
-      
+
       let withdrawalRequests = JSON.parse(localStorage.getItem('galaxyEarnWithdrawalRequests')) || [];
       withdrawalRequests.push(withdrawalRequest);
       localStorage.setItem('galaxyEarnWithdrawalRequests', JSON.stringify(withdrawalRequests));
+
+      // Save to Firestore for admin panel sync
+      (async () => {
+        try {
+          if (db) {
+            await db.collection('withdrawals').doc(withdrawalRequest.id).set(withdrawalRequest);
+          }
+        } catch (e) { console.warn('Failed to write withdrawal to Firestore:', e); }
+      })();
 
       currentUser.points -= amount;
       updateUI();
@@ -1970,25 +2360,25 @@
           parse_mode: 'MarkdownV2'
         })
       })
-      .then(response => response.json())
-      .then(data => {
-        if (!data.ok) {
-          console.warn('Telegram API error:', data.description);
-          fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              chat_id: TELEGRAM_CHAT_ID,
-              text: message.replace(/[*_`\[\]()~>#+\-=|{}.!]/g, '')
-            })
-          }).then(res => res.json()).then(plainData => {
-            if (!plainData.ok) {
-              console.error('Plain text Telegram message failed:', plainData.description);
-            }
-          });
-        }
-      })
-      .catch(error => console.error('Error sending Telegram message:', error));
+        .then(response => response.json())
+        .then(data => {
+          if (!data.ok) {
+            console.warn('Telegram API error:', data.description);
+            fetch(url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: TELEGRAM_CHAT_ID,
+                text: message.replace(/[*_`\[\]()~>#+\-=|{}.!]/g, '')
+              })
+            }).then(res => res.json()).then(plainData => {
+              if (!plainData.ok) {
+                console.error('Plain text Telegram message failed:', plainData.description);
+              }
+            });
+          }
+        })
+        .catch(error => console.error('Error sending Telegram message:', error));
     }
 
     function sendTelegramReferralNotification(refereeName, refereeCode, referrerName, referrerCode) {
@@ -2025,30 +2415,40 @@ Referral From:
           parse_mode: 'MarkdownV2'
         })
       })
-      .then(response => response.json())
-      .then(data => {
-        if (!data.ok) {
-          console.warn('Telegram API error for referral notification:', data.description);
-          fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              chat_id: TELEGRAM_CHAT_ID,
-              text: message.replace(/[*_`\[\]()~>#+\-=|{}.!]/g, '')
-            })
-          });
-        }
-      })
-      .catch(error => console.error('Error sending referral Telegram message:', error));
+        .then(response => response.json())
+        .then(data => {
+          if (!data.ok) {
+            console.warn('Telegram API error for referral notification:', data.description);
+            fetch(url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: TELEGRAM_CHAT_ID,
+                text: message.replace(/[*_`\[\]()~>#+\-=|{}.!]/g, '')
+              })
+            });
+          }
+        })
+        .catch(error => console.error('Error sending referral Telegram message:', error));
     }
 
-    // Save user state to localStorage
-    function saveUserState() {
+    // Save user state to Firestore (preferred), fallback to localStorage
+    async function saveUserState() {
       const deviceId = localStorage.getItem('galaxyEarnDeviceId');
+      try {
+        if (db) {
+          const docData = userToFirestoreDoc(deviceId, currentUser);
+          await db.collection('users').doc(deviceId).set(docData, { merge: true });
+        }
+      } catch (error) {
+        console.warn('Failed to save user to Firestore, will keep local backup:', error);
+      }
+      // Always keep local backup for offline usage
       let allUsersData = JSON.parse(localStorage.getItem('galaxyEarnAllUsers')) || {};
       allUsersData[deviceId] = currentUser;
       localStorage.setItem('galaxyEarnAllUsers', JSON.stringify(allUsersData));
     }
   </script>
 </body>
+
 </html>
