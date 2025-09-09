@@ -939,7 +939,8 @@
 
       .mobile-menu-button { display: none !important; }
       .bottom-nav { display: block; }
-      .admin-main { padding-bottom: 90px; }
+      .admin-main { padding-bottom: calc(140px + env(safe-area-inset-bottom)); }
+      .tab-content { padding-bottom: 120px; }
     }
 
     /* Extra-compact bottom nav on very small screens */
