@@ -1188,6 +1188,19 @@
       referredBy: null,
       referredUsers: []
     };
+    // Track current page
+    let currentPage = 'home';
+    function renderCurrentPage() {
+      const pageRenderers = {
+        'home': renderHomePage,
+        'bonus': renderBonusPage,
+        'withdraw': renderWithdrawPage,
+        'referral': renderReferralPage,
+        'statistics': renderStatisticsPage
+      };
+      if (pageRenderers[currentPage]) pageRenderers[currentPage]();
+      updateUI();
+    }
 
     // Show toast notification
     function showToast(message, duration = 3000) {
@@ -1457,7 +1470,7 @@
               MIN_WITHDRAW_POINTS = settings.minWithdrawalPoints || MIN_WITHDRAW_POINTS;
               REFERRAL_BONUS_REFERRER = settings.referrerBonus || REFERRAL_BONUS_REFERRER;
               REFERRAL_BONUS_REFEREE = settings.refereeBonus || REFERRAL_BONUS_REFEREE;
-              updateUI();
+              renderCurrentPage();
             }
           });
         } catch (e) { /* ignore */ }
@@ -1541,7 +1554,7 @@
               MIN_WITHDRAW_POINTS = settings.minWithdrawalPoints || 400;
               REFERRAL_BONUS_REFERRER = settings.referrerBonus || 10;
               REFERRAL_BONUS_REFEREE = settings.refereeBonus || 5;
-              updateUI();
+              renderCurrentPage();
             }
           });
         } catch (e) { console.warn('Settings listener failed:', e); }
@@ -1804,6 +1817,7 @@
 
       // Cleanup previous listeners when switching pages
       if (statisticsUnsubscribe) { try { statisticsUnsubscribe(); } catch (e) {} statisticsUnsubscribe = null; }
+      currentPage = page;
       if (pageRenderers[page]) pageRenderers[page]();
       updateUI();
     }
