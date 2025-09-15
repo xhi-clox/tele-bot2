@@ -334,6 +334,71 @@
       /* Prevent text wrapping */
     }
 
+    /* Compact columns for space-saving */
+    .col-ads { width: 80px; text-align: right; }
+    .col-actions { width: 50px; text-align: center; }
+    .col-name { max-width: 180px; }
+
+    @media (max-width: 768px) {
+      .col-ads { width: 64px; }
+      .col-actions { width: 44px; }
+      .col-name { max-width: 130px; }
+    }
+
+    /* Name truncation with ellipsis */
+    .name-cell {
+      display: inline-block;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      vertical-align: bottom;
+      cursor: pointer;
+    }
+
+    /* Three-dot (kebab) menu */
+    .kebab-wrapper { position: relative; display: inline-flex; }
+    .kebab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 6px 8px;
+      border-radius: 6px;
+    }
+    .kebab-btn:hover { background: var(--bg-secondary); color: var(--text-primary); }
+    .kebab-menu {
+      position: absolute;
+      right: 0;
+      top: 100%;
+      margin-top: 6px;
+      background: var(--bg-card);
+      border: 1px solid var(--bg-tertiary);
+      border-radius: 8px;
+      box-shadow: var(--shadow-sm);
+      display: none;
+      min-width: 140px;
+      z-index: 2001;
+      overflow: hidden;
+    }
+    .kebab-menu.show { display: block; }
+    .kebab-item { display: block; width: 100%; text-align: left; padding: 10px 12px; background: transparent; border: none; color: var(--text-primary); cursor: pointer; font-size: 0.9rem; }
+    .kebab-item:hover { background: var(--bg-secondary); }
+
+    /* Simple name popup */
+    .name-popup {
+      position: fixed;
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1px solid var(--bg-tertiary);
+      border-radius: 8px;
+      padding: 8px 10px;
+      box-shadow: var(--shadow);
+      z-index: 3000;
+      max-width: 80vw;
+      font-size: 0.9rem;
+    }
+
     .admin-table th {
       background: var(--bg-secondary);
       font-weight: 600;
@@ -775,6 +840,11 @@
       margin: 0 auto 15px;
       display: block;
       border: 3px solid var(--accent-primary);
+    }
+
+    /* Center name row nicely on mobile in modal */
+    @media (max-width: 768px) {
+      .user-details .detail-row.name-row { justify-content: center; text-align: center; }
     }
 
     .user-stats-grid {
@@ -1242,9 +1312,9 @@
               <thead>
                 <tr>
                   <th>Rank</th>
-                  <th>User</th>
+                  <th class="col-name">User</th>
                   <th>Points</th>
-                  <th>Ads Watched</th>
+                  <th class="col-ads" title="Ads Watched">Ads W.</th>
                   <th>Referrals</th>
                 </tr>
               </thead>
@@ -1274,11 +1344,11 @@
             <table class="admin-table users-table">
               <thead>
                 <tr>
-                  <th>Name</th>
+                  <th class="col-name">Name</th>
                   <th>Points</th>
-                  <th>Ads Watched</th>
+                  <th class="col-ads" title="Ads Watched">Ads W.</th>
                   <th>Status</th>
-                  <th>Actions</th>
+                  <th class="col-actions">Actions</th>
                 </tr>
               </thead>
               <tbody id="usersTable">
@@ -2044,25 +2114,64 @@
 
       users.forEach(user => {
         const row = document.createElement('tr');
+        const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'User';
         row.innerHTML = `
-          <td>${user.firstName || ''} ${user.lastName || ''}</td>
+          <td class="col-name"><span class="name-cell" onclick="showNamePopup(event, '${fullName.replace(/'/g, "&#39;")}')" title="${fullName}">${fullName}</span></td>
           <td>${user.points || 0}</td>
-          <td>${user.totalAdsWatchedLifetime || 0}</td>
+          <td class="col-ads">${user.totalAdsWatchedLifetime || 0}</td>
           <td><span class="badge badge-success">Active</span></td>
-          <td>
-            <button class="btn btn-sm btn-secondary" onclick="viewUserDetails('${user.id}')">
-              <i class="fas fa-eye"></i> View
-            </button>
-            <button class="btn btn-sm btn-danger" onclick="banUser('${user.id}')">
-              <i class="fas fa-ban"></i> Ban
-            </button>
-            <button class="btn btn-sm btn-danger" onclick="deleteUser('${user.id}')">
-              <i class="fas fa-trash"></i> Delete
-            </button>
+          <td class="col-actions">
+            <div class="kebab-wrapper">
+              <button class="kebab-btn" onclick="toggleKebabMenu(this)" aria-label="Actions"><i class="fas fa-ellipsis-vertical"></i></button>
+              <div class="kebab-menu">
+                <button class="kebab-item" onclick="closeAllKebabMenus(); viewUserDetails('${user.id}')"><i class="fas fa-eye"></i> View</button>
+                <button class="kebab-item" onclick="closeAllKebabMenus(); banUser('${user.id}')"><i class="fas fa-ban"></i> Ban</button>
+                <button class="kebab-item" onclick="closeAllKebabMenus(); deleteUser('${user.id}')"><i class="fas fa-trash"></i> Delete</button>
+              </div>
+            </div>
           </td>
         `;
         usersTable.appendChild(row);
       });
+    }
+
+    // Toggle kebab menu visibility
+    function toggleKebabMenu(buttonEl) {
+      const menu = buttonEl.nextElementSibling;
+      const isOpen = menu.classList.contains('show');
+      document.querySelectorAll('.kebab-menu.show').forEach(m => m.classList.remove('show'));
+      if (!isOpen) menu.classList.add('show');
+      // Close on outside click
+      const onDocClick = (e) => {
+        if (!menu.contains(e.target) && e.target !== buttonEl) {
+          menu.classList.remove('show');
+          document.removeEventListener('click', onDocClick);
+        }
+      };
+      setTimeout(() => document.addEventListener('click', onDocClick), 0);
+    }
+
+    function closeAllKebabMenus() {
+      document.querySelectorAll('.kebab-menu.show').forEach(m => m.classList.remove('show'));
+    }
+
+    // Show full name small popup near cursor
+    function showNamePopup(evt, name) {
+      // Remove any existing popup
+      document.querySelectorAll('.name-popup').forEach(el => el.remove());
+      const popup = document.createElement('div');
+      popup.className = 'name-popup';
+      popup.textContent = name;
+      document.body.appendChild(popup);
+      const padding = 8;
+      const x = Math.min(window.innerWidth - popup.offsetWidth - padding, evt.clientX + 12);
+      const y = Math.min(window.innerHeight - popup.offsetHeight - padding, evt.clientY + 12);
+      popup.style.left = x + 'px';
+      popup.style.top = y + 'px';
+      setTimeout(() => {
+        const remove = () => { popup.remove(); document.removeEventListener('click', remove); };
+        document.addEventListener('click', remove);
+      }, 0);
     }
 
     // Search filtering for users
@@ -2224,11 +2333,12 @@
 
       topUsers.forEach((user, index) => {
         const row = document.createElement('tr');
+        const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'User';
         row.innerHTML = `
           <td>#${index + 1}</td>
-          <td>${user.firstName || ''} ${user.lastName || ''}</td>
+          <td class="col-name"><span class="name-cell" onclick=\"showNamePopup(event, '${fullName.replace(/'/g, "&#39;")}')\" title=\"${fullName}\">${fullName}</span></td>
           <td>${user.points || 0}</td>
-          <td>${user.totalAdsWatchedLifetime || 0}</td>
+          <td class="col-ads">${user.totalAdsWatchedLifetime || 0}</td>
           <td>${user.referrals ? user.referrals.length : 0}</td>
         `;
         topUsersTable.appendChild(row);
@@ -2525,6 +2635,7 @@
 </body>
 
 </html>
+
 
 
 
