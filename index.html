@@ -987,6 +987,12 @@
     @media (min-width: 481px) {
       .bottom-nav { max-width: 480px; }
     }
+    /* Chart styles aligned with dashboard */
+    .chart-card { background: var(--bg-card); border:1px solid var(--bg-tertiary); border-radius:16px; padding:12px 16px; box-shadow: var(--shadow-sm); overflow: hidden; }
+    .chart-title { font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; font-size: 0.95rem; }
+    .chart-wrapper { position: relative; width: 100%; height: 240px; }
+    .chart-canvas { width: 100% !important; height: 100% !important; display: block; }
+    @media (max-width: 400px) { .chart-wrapper { height: 200px; } }
   </style>
 </head>
 
@@ -2075,13 +2081,13 @@
             </div>
           </div>
           <div style="display:grid; grid-template-columns:1fr; gap:12px; margin-bottom:16px;">
-            <div style="background: linear-gradient(135deg, rgba(126,87,194,0.12), rgba(94,53,177,0.12)); border:1px solid var(--bg-tertiary); border-radius:16px; padding:12px 16px; height:200px;">
-              <div style="font-size:0.85rem; font-weight:700; color: var(--text-secondary); margin-bottom:6px;">Your Activity</div>
-              <canvas id="yourStatsChart"></canvas>
+            <div class="chart-card">
+              <div class="chart-title">Your Activity</div>
+              <div class="chart-wrapper"><canvas id="yourStatsChart" class="chart-canvas"></canvas></div>
             </div>
-            <div style="background: linear-gradient(135deg, rgba(126,87,194,0.12), rgba(94,53,177,0.12)); border:1px solid var(--bg-tertiary); border-radius:16px; padding:12px 16px; height:220px;">
-              <div style="font-size:0.85rem; font-weight:700; color: var(--text-secondary); margin-bottom:6px;">All Users Activity</div>
-              <canvas id="statsChart"></canvas>
+            <div class="chart-card">
+              <div class="chart-title">All Users Activity</div>
+              <div class="chart-wrapper"><canvas id="statsChart" class="chart-canvas"></canvas></div>
             </div>
           </div>
           </div>
@@ -2106,13 +2112,15 @@
       function renderChart(dataPoints) {
         if (!ctx || !window.Chart) return;
         if (chartInstance) chartInstance.destroy();
+        // If no datapoints, render an empty chart with axes
+        const safeData = Array.isArray(dataPoints) && dataPoints.length ? dataPoints : new Array(labels.length).fill(0);
         chartInstance = new Chart(ctx, {
           type: 'line',
           data: {
             labels: labels,
             datasets: [{
               label: 'Ads Watched',
-              data: dataPoints,
+              data: safeData,
               fill: true,
               tension: 0.35,
               backgroundColor: 'rgba(126, 87, 194, 0.25)',
@@ -2131,7 +2139,8 @@
               x: { grid: { display: false }, ticks: { color: getComputedStyle(document.body).getPropertyValue('--text-secondary') } },
               y: { grid: { color: 'rgba(160,174,192,0.2)' }, ticks: { color: getComputedStyle(document.body).getPropertyValue('--text-secondary') }, beginAtZero: true }
             },
-            animation: { duration: 500 }
+            animation: { duration: 300 },
+            layout: { padding: { right: 8, left: 2, top: 4, bottom: 4 } }
           }
         });
       }
@@ -2141,13 +2150,14 @@
       function renderYourChart(dataPoints) {
         if (!yourCtx || !window.Chart) return;
         if (yourChartInstance) yourChartInstance.destroy();
+        const safeData = Array.isArray(dataPoints) && dataPoints.length ? dataPoints : new Array(labels.length).fill(0);
         yourChartInstance = new Chart(yourCtx, {
           type: 'line',
           data: {
             labels: labels,
             datasets: [{
               label: 'Your Ads Watched',
-              data: dataPoints,
+              data: safeData,
               fill: true,
               tension: 0.35,
               backgroundColor: 'rgba(56, 161, 105, 0.25)',
@@ -2166,7 +2176,8 @@
               x: { grid: { display: false }, ticks: { color: getComputedStyle(document.body).getPropertyValue('--text-secondary') } },
               y: { grid: { color: 'rgba(160,174,192,0.2)' }, ticks: { color: getComputedStyle(document.body).getPropertyValue('--text-secondary') }, beginAtZero: true }
             },
-            animation: { duration: 500 }
+            animation: { duration: 300 },
+            layout: { padding: { right: 8, left: 2, top: 4, bottom: 4 } }
           }
         });
       }
@@ -2183,11 +2194,13 @@
         if (topUsersList) {
           topUsersList.innerHTML = top.length ? top.map((u, idx) => `
             <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--bg-tertiary);">
-              <div style="display:flex; align-items:center; gap:10px;">
-                <span style="width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center; border-radius:50%; background: rgba(126,87,194,0.12); color: var(--accent-primary); font-weight:700;">${idx + 1}</span>
-                <span style="font-weight:600; color: var(--text-primary);">${u.name}</span>
+              <div style="display:flex; align-items:center; gap:10px; min-width:0;">
+                <span style="width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center; border-radius:50%; background: rgba(126,87,194,0.12); color: var(--accent-primary); font-weight:700; flex:0 0 auto;">${idx + 1}</span>
+                <span onclick=\"showNamePopup(event, '${(u.name||'User').replace(/'/g, "&#39;")}')\" title=\"${u.name}\" style="font-weight:600; color: var(--text-primary); max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; display:inline-block;">
+                  ${u.name}
+                </span>
               </div>
-              <span style="font-weight:700; color: var(--accent-primary);"><i class="fas fa-coins"></i> ${u.points}</span>
+              <span style="font-weight:700; color: var(--accent-primary); flex:0 0 auto;"><i class="fas fa-coins"></i> ${u.points}</span>
             </div>
           `).join('') : `<div class="empty-state"><i class="fas fa-users"></i><p>No users yet</p></div>`;
         }
@@ -2200,10 +2213,8 @@
           statisticsUnsubscribe = db.collection('users').onSnapshot(snapshot => {
             const users = snapshot.docs.map(d => d.data() || {});
             updateStatsUIFromUsers(users);
-            const totalAds = users.reduce((sum, u) => sum + (u.totalAdsWatchedLifetime || 0), 0);
-            const perDay = Math.max(0, Math.round(totalAds / 7));
-            const series = [perDay-3, perDay-1, perDay, perDay+2, perDay-2, perDay+3, perDay+1].map(v => Math.max(0, v));
-            renderChart(series);
+            // Do not fabricate all-users activity; only render if you have true time-series data
+            renderChart([]);
             // User series from local activity
             renderYourChart(getUserWeeklySeries());
           }, err => {
@@ -2227,10 +2238,8 @@
           totalAdsWatchedLifetime: u.totalAdsWatchedLifetime || 0
         }));
         updateStatsUIFromUsers(usersArray);
-        const totalAds = usersArray.reduce((sum, u) => sum + (u.totalAdsWatchedLifetime || 0), 0);
-        const perDay = Math.max(0, Math.round(totalAds / 7));
-        const series = [perDay-3, perDay-1, perDay, perDay+2, perDay-2, perDay+3, perDay+1].map(v => Math.max(0, v));
-        renderChart(series);
+        // No fabricated all-users activity locally
+        renderChart([]);
         renderYourChart(getUserWeeklySeries());
       }
 
@@ -2250,6 +2259,40 @@
           series.push(Number(data[ymd] || 0));
         }
         return series;
+      }
+
+      // Ensure charts adapt on resize
+      let resizeTimer;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          try { if (chartInstance) chartInstance.resize(); if (yourChartInstance) yourChartInstance.resize(); } catch (e) {}
+        }, 150);
+      }, { passive: true });
+
+      // Simple popup to show full name on tap
+      window.showNamePopup = function(evt, name) {
+        document.querySelectorAll('.name-popup').forEach(el => el.remove());
+        const el = document.createElement('div');
+        el.className = 'name-popup';
+        el.textContent = name || '';
+        el.style.position = 'fixed';
+        el.style.background = getComputedStyle(document.body).getPropertyValue('--bg-card') || '#fff';
+        el.style.color = getComputedStyle(document.body).getPropertyValue('--text-primary') || '#000';
+        el.style.border = `1px solid ${getComputedStyle(document.body).getPropertyValue('--bg-tertiary') || '#eee'}`;
+        el.style.borderRadius = '8px';
+        el.style.padding = '8px 10px';
+        el.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+        el.style.zIndex = '3000';
+        el.style.maxWidth = '80vw';
+        document.body.appendChild(el);
+        const padding = 8;
+        const x = Math.min(window.innerWidth - el.offsetWidth - padding, evt.clientX + 12);
+        const y = Math.min(window.innerHeight - el.offsetHeight - padding, evt.clientY + 12);
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+        const remove = () => { try { el.remove(); } catch (e) {} document.removeEventListener('click', remove); };
+        setTimeout(() => document.addEventListener('click', remove), 0);
       }
     }
 
@@ -2604,4 +2647,5 @@ Referral From:
 </body>
 
 </html>
+
 
