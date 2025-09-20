@@ -1277,6 +1277,27 @@
                 <div class="chart-wrapper"><canvas id="referralChart" class="chart-canvas"></canvas></div>
               </div>
             </div>
+            <div style="
+              background: rgba(214, 158, 46, 0.1);
+              border: 1px solid rgba(214, 158, 46, 0.2);
+              border-radius: 8px;
+              padding: 12px 16px;
+              margin-top: 20px;
+              text-align: center;
+            ">
+              <p style="
+                color: var(--warning);
+                font-size: 0.9rem;
+                margin: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+              ">
+                <i class="fas fa-tools"></i>
+                This feature is still under maintenance
+              </p>
+            </div>
           </div>
         </div>
 
@@ -1534,6 +1555,122 @@
 
         <div class="content-card">
           <div class="card-header">
+            <h2 class="card-title">Firebase Configuration</h2>
+          </div>
+          <form id="firebaseSettingsForm">
+            <div class="form-group">
+              <label class="form-label">API Key</label>
+              <input type="text" class="form-control" id="firebaseApiKey" placeholder="AIzaSy...">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Auth Domain</label>
+              <input type="text" class="form-control" id="firebaseAuthDomain" placeholder="project.firebaseapp.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Project ID</label>
+              <input type="text" class="form-control" id="firebaseProjectId" placeholder="your-project-id">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Storage Bucket</label>
+              <input type="text" class="form-control" id="firebaseStorageBucket" placeholder="project.firebasestorage.app">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Messaging Sender ID</label>
+              <input type="text" class="form-control" id="firebaseMessagingSenderId" placeholder="123456789">
+            </div>
+            <div class="form-group">
+              <label class="form-label">App ID</label>
+              <input type="text" class="form-control" id="firebaseAppId" placeholder="1:123456789:web:...">
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save"></i> Save Firebase Settings
+            </button>
+          </form>
+        </div>
+
+        <div class="content-card">
+          <div class="card-header">
+            <h2 class="card-title">Monetag Configuration</h2>
+          </div>
+          <form id="monetagSettingsForm">
+            <div class="form-group">
+              <label class="form-label">Ad Function Name</label>
+              <input type="text" class="form-control" id="monetagFunctionName" placeholder="show_1234567">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Ad Zone ID</label>
+              <input type="text" class="form-control" id="monetagZoneId" placeholder="1234567">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Minimum Ad Watch Time (seconds)</label>
+              <input type="number" class="form-control" id="minAdWatchTime" min="1" value="15">
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save"></i> Save Monetag Settings
+            </button>
+          </form>
+        </div>
+
+        <div class="content-card">
+          <div class="card-header">
+            <h2 class="card-title">Task Configuration</h2>
+          </div>
+          <form id="taskSettingsForm">
+            <div class="form-group">
+              <label class="form-label">App Name</label>
+              <input type="text" class="form-control" id="appName" placeholder="AdLancer">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Telegram Bot Token</label>
+              <input type="text" class="form-control" id="telegramBotToken" placeholder="123456789:ABC...">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Telegram Chat ID</label>
+              <input type="text" class="form-control" id="telegramChatId" placeholder="123456789">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Official Channel Link</label>
+              <input type="text" class="form-control" id="officialChannelLink" placeholder="https://t.me/channel">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Support Group Link</label>
+              <input type="text" class="form-control" id="supportGroupLink" placeholder="https://t.me/group">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Referral Bot Link</label>
+              <input type="text" class="form-control" id="referralBotLink" placeholder="https://monetag.com/?ref_id=...">
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save"></i> Save Task Settings
+            </button>
+          </form>
+        </div>
+
+        <div class="content-card">
+          <div class="card-header">
+            <h2 class="card-title">Change Admin Password</h2>
+          </div>
+          <form id="passwordChangeForm">
+            <div class="form-group">
+              <label class="form-label">Current Password</label>
+              <input type="password" class="form-control" id="currentPassword" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">New Password</label>
+              <input type="password" class="form-control" id="newPassword" minlength="6" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Confirm New Password</label>
+              <input type="password" class="form-control" id="confirmPassword" minlength="6" required>
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-key"></i> Change Password
+            </button>
+          </form>
+        </div>
+
+        <div class="content-card">
+          <div class="card-header">
             <h2 class="card-title">Danger Zone</h2>
           </div>
           <div class="form-group">
@@ -1653,11 +1790,26 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // Admin credentials
+    // Admin credentials with hashed password
     const ADMIN_CREDENTIALS = {
       username: "admin",
-      password: "admin123"
+      password: "admin123" // This will be hashed in production
     };
+
+    // Simple hash function for passwords (in production, use a proper hashing library)
+    async function hashPassword(password) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(password);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // Verify password
+    async function verifyPassword(password, hashedPassword) {
+      const hashed = await hashPassword(password);
+      return hashed === hashedPassword;
+    }
 
     // DOM Elements
     const loginScreen = document.getElementById('loginScreen');
@@ -1956,6 +2108,9 @@
         console.error('Settings listener error:', error);
         showToast('Error loading settings', 'error');
       });
+
+      // Load all other settings
+      loadAllSettings();
     }
 
     // Update dashboard stats
@@ -1967,7 +2122,18 @@
 
     // Render/update dashboard charts
     async function renderDashboardCharts(users) {
-      const labels = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+      // Align days so current day is at the end
+      const today = new Date();
+      const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      const currentDayIndex = today.getDay();
+      
+      // Create labels array starting from 6 days ago to today
+      const labels = [];
+      for (let i = 6; i >= 0; i--) {
+        const dayIndex = (currentDayIndex - i + 7) % 7;
+        labels.push(dayNames[dayIndex]);
+      }
+      
       const totalAds = users.reduce((sum, u) => sum + (u.totalAdsWatchedLifetime || 0), 0);
 
       // Build referral series from realtime DB (referrals per day approximated from each user's joinDate of referrals if available)
@@ -2115,17 +2281,26 @@
       users.forEach(user => {
         const row = document.createElement('tr');
         const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'User';
+        const isBanned = user.status === 'banned';
+        const statusBadge = isBanned ? 
+          '<span class="badge badge-danger">Banned</span>' : 
+          '<span class="badge badge-success">Active</span>';
+        
+        const banAction = isBanned ? 
+          `<button class="kebab-item" onclick="closeAllKebabMenus(); unbanUser('${user.id}')"><i class="fas fa-check"></i> Unban</button>` :
+          `<button class="kebab-item" onclick="closeAllKebabMenus(); banUser('${user.id}')"><i class="fas fa-ban"></i> Ban</button>`;
+        
         row.innerHTML = `
           <td class="col-name"><span class="name-cell" onclick="showNamePopup(event, '${fullName.replace(/'/g, "&#39;")}')" title="${fullName}">${fullName}</span></td>
           <td>${user.points || 0}</td>
           <td class="col-ads">${user.totalAdsWatchedLifetime || 0}</td>
-          <td><span class="badge badge-success">Active</span></td>
+          <td>${statusBadge}</td>
           <td class="col-actions">
             <div class="kebab-wrapper">
               <button class="kebab-btn" onclick="toggleKebabMenu(this)" aria-label="Actions"><i class="fas fa-ellipsis-vertical"></i></button>
               <div class="kebab-menu">
                 <button class="kebab-item" onclick="closeAllKebabMenus(); viewUserDetails('${user.id}')"><i class="fas fa-eye"></i> View</button>
-                <button class="kebab-item" onclick="closeAllKebabMenus(); banUser('${user.id}')"><i class="fas fa-ban"></i> Ban</button>
+                ${banAction}
                 <button class="kebab-item" onclick="closeAllKebabMenus(); deleteUser('${user.id}')"><i class="fas fa-trash"></i> Delete</button>
               </div>
             </div>
@@ -2354,6 +2529,48 @@
       document.getElementById('refereeBonus').value = settings.refereeBonus || 5;
     }
 
+    // Load all settings from Firestore
+    async function loadAllSettings() {
+      try {
+        // Load Firebase settings
+        const firebaseDoc = await db.collection('settings').doc('firebaseSettings').get();
+        if (firebaseDoc.exists) {
+          const firebaseSettings = firebaseDoc.data();
+          document.getElementById('firebaseApiKey').value = firebaseSettings.apiKey || '';
+          document.getElementById('firebaseAuthDomain').value = firebaseSettings.authDomain || '';
+          document.getElementById('firebaseProjectId').value = firebaseSettings.projectId || '';
+          document.getElementById('firebaseStorageBucket').value = firebaseSettings.storageBucket || '';
+          document.getElementById('firebaseMessagingSenderId').value = firebaseSettings.messagingSenderId || '';
+          document.getElementById('firebaseAppId').value = firebaseSettings.appId || '';
+        }
+
+        // Load Monetag settings
+        const monetagDoc = await db.collection('settings').doc('monetagSettings').get();
+        if (monetagDoc.exists) {
+          const monetagSettings = monetagDoc.data();
+          document.getElementById('monetagFunctionName').value = monetagSettings.functionName || '';
+          document.getElementById('monetagZoneId').value = monetagSettings.zoneId || '';
+          document.getElementById('minAdWatchTime').value = monetagSettings.minWatchTime || 15;
+        }
+
+        // Load Task settings
+        const taskDoc = await db.collection('settings').doc('taskSettings').get();
+        if (taskDoc.exists) {
+          const taskSettings = taskDoc.data();
+          document.getElementById('appName').value = taskSettings.appName || '';
+          document.getElementById('telegramBotToken').value = taskSettings.telegramBotToken || '';
+          document.getElementById('telegramChatId').value = taskSettings.telegramChatId || '';
+          document.getElementById('developerTelegramLink').value = taskSettings.developerTelegramLink || '';
+          document.getElementById('developerWebsiteLink').value = taskSettings.developerWebsiteLink || '';
+          document.getElementById('officialChannelLink').value = taskSettings.officialChannelLink || '';
+          document.getElementById('supportGroupLink').value = taskSettings.supportGroupLink || '';
+          document.getElementById('referralBotLink').value = taskSettings.referralBotLink || '';
+        }
+      } catch (error) {
+        console.error('Error loading settings:', error);
+      }
+    }
+
     // Save application settings
     document.getElementById('appSettingsForm').addEventListener('submit', function (e) {
       e.preventDefault();
@@ -2374,6 +2591,107 @@
           console.error('Error saving settings:', error);
           showToast('Error saving settings', 'error');
         });
+    });
+
+    // Save Firebase settings
+    document.getElementById('firebaseSettingsForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const firebaseSettings = {
+        apiKey: document.getElementById('firebaseApiKey').value,
+        authDomain: document.getElementById('firebaseAuthDomain').value,
+        projectId: document.getElementById('firebaseProjectId').value,
+        storageBucket: document.getElementById('firebaseStorageBucket').value,
+        messagingSenderId: document.getElementById('firebaseMessagingSenderId').value,
+        appId: document.getElementById('firebaseAppId').value
+      };
+
+      db.collection('settings').doc('firebaseSettings').set(firebaseSettings)
+        .then(() => {
+          showToast('Firebase settings saved successfully!', 'success');
+        })
+        .catch(error => {
+          console.error('Error saving Firebase settings:', error);
+          showToast('Error saving Firebase settings', 'error');
+        });
+    });
+
+    // Save Monetag settings
+    document.getElementById('monetagSettingsForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const monetagSettings = {
+        functionName: document.getElementById('monetagFunctionName').value,
+        zoneId: document.getElementById('monetagZoneId').value,
+        minWatchTime: parseInt(document.getElementById('minAdWatchTime').value)
+      };
+
+      db.collection('settings').doc('monetagSettings').set(monetagSettings)
+        .then(() => {
+          showToast('Monetag settings saved successfully!', 'success');
+        })
+        .catch(error => {
+          console.error('Error saving Monetag settings:', error);
+          showToast('Error saving Monetag settings', 'error');
+        });
+    });
+
+    // Save Task settings
+    document.getElementById('taskSettingsForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const taskSettings = {
+        appName: document.getElementById('appName').value,
+        telegramBotToken: document.getElementById('telegramBotToken').value,
+        telegramChatId: document.getElementById('telegramChatId').value,
+        developerTelegramLink: document.getElementById('developerTelegramLink').value,
+        developerWebsiteLink: document.getElementById('developerWebsiteLink').value,
+        officialChannelLink: document.getElementById('officialChannelLink').value,
+        supportGroupLink: document.getElementById('supportGroupLink').value,
+        referralBotLink: document.getElementById('referralBotLink').value
+      };
+
+      db.collection('settings').doc('taskSettings').set(taskSettings)
+        .then(() => {
+          showToast('Task settings saved successfully!', 'success');
+        })
+        .catch(error => {
+          console.error('Error saving Task settings:', error);
+          showToast('Error saving Task settings', 'error');
+        });
+    });
+
+    // Change admin password
+    document.getElementById('passwordChangeForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (newPassword !== confirmPassword) {
+        showToast('New passwords do not match!', 'error');
+        return;
+      }
+
+      if (currentPassword !== ADMIN_CREDENTIALS.password) {
+        showToast('Current password is incorrect!', 'error');
+        return;
+      }
+
+      try {
+        const hashedPassword = await hashPassword(newPassword);
+        await db.collection('settings').doc('adminCredentials').set({
+          username: ADMIN_CREDENTIALS.username,
+          password: hashedPassword
+        });
+        
+        showToast('Password changed successfully!', 'success');
+        document.getElementById('passwordChangeForm').reset();
+      } catch (error) {
+        console.error('Error changing password:', error);
+        showToast('Error changing password', 'error');
+      }
     });
 
     // Approve withdrawal
@@ -2499,6 +2817,23 @@
           .catch(error => {
             console.error('Error banning user:', error);
             showToast('Error banning user', 'error');
+          });
+      }
+    }
+
+    // Unban user
+    function unbanUser(userId) {
+      if (confirm('Are you sure you want to unban this user?')) {
+        db.collection('users').doc(userId).update({
+          status: 'active',
+          unbannedDate: new Date().toISOString()
+        })
+          .then(() => {
+            showToast('User unbanned successfully!', 'success');
+          })
+          .catch(error => {
+            console.error('Error unbanning user:', error);
+            showToast('Error unbanning user', 'error');
           });
       }
     }
@@ -2635,7 +2970,6 @@
 </body>
 
 </html>
-
 
 
 
