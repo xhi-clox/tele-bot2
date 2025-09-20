@@ -1123,7 +1123,7 @@
     const db = (typeof firebase !== 'undefined' && firebase.firestore) ? firebase.firestore() : null;
 
     // Configuration - Load from localStorage or use defaults
-    const APP_NAME = "AdLancer";
+    let APP_NAME = "AdLancer";
     const defaultSettings = {
       pointsPerAd: 5,
       dailyAdLimit: 5000,
@@ -1139,14 +1139,15 @@
     let MIN_WITHDRAW_POINTS = settings.minWithdrawalPoints || 400;
     let REFERRAL_BONUS_REFERRER = settings.referrerBonus || 10;
     let REFERRAL_BONUS_REFEREE = settings.refereeBonus || 5;
-    const MONETAG_AD_FUNCTION_NAME = 'show_9818146';
-    const TELEGRAM_BOT_TOKEN = "7525170440:AAFF9DO5-OEAdwlo5nrLcM0XFc16Juuh-qw";
-    const TELEGRAM_CHAT_ID = "8314434724";
-    const DEVELOPER_TELEGRAM_PROFILE_LINK = "";
-    const DEVELOPER_WEBSITE_LINK = "";
-    const OFFICIAL_CHANNEL_LINK = "";
-    const SUPPORT_GROUP_LINK = "";
-    const REFERRAL_BOT_LINK = "https://monetag.com/?ref_id=zVQj";
+    let MONETAG_AD_FUNCTION_NAME = 'show_9818146';
+    let TELEGRAM_BOT_TOKEN = "7525170440:AAFF9DO5-OEAdwlo5nrLcM0XFc16Juuh-qw";
+    let TELEGRAM_CHAT_ID = "8314434724";
+    let DEVELOPER_TELEGRAM_PROFILE_LINK = "";
+    let DEVELOPER_WEBSITE_LINK = "";
+    let OFFICIAL_CHANNEL_LINK = "";
+    let SUPPORT_GROUP_LINK = "";
+    let REFERRAL_BOT_LINK = "https://monetag.com/?ref_id=zVQj";
+    let adMinimumWatchTime = 15000; // 15 seconds in milliseconds
     const BONUS_CHANNELS = [
       { id: 'tg_official_channel', name: 'Official Channel', link: OFFICIAL_CHANNEL_LINK, reward: 5, icon: 'fab fa-telegram-plane' },
       { id: 'tg_support_group', name: 'Support Group', link: SUPPORT_GROUP_LINK, reward: 5, icon: 'fas fa-headset' },
@@ -1272,8 +1273,76 @@
         claimedBonuses: Array.isArray(data.claimedBonuses) ? data.claimedBonuses : [],
         referralCode: data.referralCode || generateReferralCode(),
         referredBy: data.referredBy || null,
-        referredUsers: Array.isArray(data.referrals) ? data.referrals : []
+        referredUsers: Array.isArray(data.referrals) ? data.referrals : [],
+        status: data.status || 'active'
       };
+    }
+
+    // Show banned message and disable app functionality
+    function showBannedMessage() {
+      document.body.innerHTML = `
+        <div style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          min-height: 100vh;
+          background: var(--bg-primary);
+          color: var(--text-primary);
+          font-family: 'Inter', sans-serif;
+          padding: 20px;
+          text-align: center;
+        ">
+          <div style="
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 40px 20px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--bg-tertiary);
+          ">
+            <div style="
+              width: 80px;
+              height: 80px;
+              border-radius: 50%;
+              background: rgba(229, 62, 62, 0.1);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin: 0 auto 20px;
+              color: var(--error);
+              font-size: 2rem;
+            ">
+              <i class="fas fa-ban"></i>
+            </div>
+            <h1 style="
+              font-size: 1.5rem;
+              font-weight: 700;
+              margin-bottom: 10px;
+              color: var(--error);
+            ">Account Suspended</h1>
+            <p style="
+              color: var(--text-secondary);
+              line-height: 1.5;
+              margin-bottom: 20px;
+            ">Your account has been temporarily suspended. Please contact support for assistance.</p>
+            <div style="
+              background: rgba(229, 62, 62, 0.1);
+              border: 1px solid rgba(229, 62, 62, 0.2);
+              border-radius: 8px;
+              padding: 15px;
+              margin-top: 20px;
+            ">
+              <p style="
+                font-size: 0.9rem;
+                color: var(--error);
+                margin: 0;
+              ">If you believe this is an error, please contact our support team.</p>
+            </div>
+          </div>
+        </div>
+      `;
     }
 
     // Load user state from Firestore (preferred), fallback to localStorage, also Telegram WebApp mapping
@@ -1294,6 +1363,12 @@
             localStorage.setItem('galaxyEarnDeviceId', doc.id);
             deviceId = doc.id;
             currentUser = firestoreDocToUser(doc.data());
+            
+            // Check if user is banned
+            if (doc.data().status === 'banned') {
+              showBannedMessage();
+              return;
+            }
           } else {
             // Create new user
             currentUser = {
@@ -1317,6 +1392,12 @@
           const doc = await db.collection('users').doc(deviceId).get();
           if (doc.exists) {
             currentUser = firestoreDocToUser(doc.data());
+            
+            // Check if user is banned
+            if (doc.data().status === 'banned') {
+              showBannedMessage();
+              return;
+            }
           } else {
             currentUser = {
               name: 'Guest User',
@@ -1456,7 +1537,7 @@
     }
 
     // Reload settings from Firestore (preferred) or localStorage
-    function reloadSettings() {
+    async function reloadSettings() {
       const local = JSON.parse(localStorage.getItem('galaxyEarnSettings')) || defaultSettings;
       settings = local;
       ADS_PER_DAY_LIMIT = settings.dailyAdLimit || 5000;
@@ -1464,22 +1545,48 @@
       MIN_WITHDRAW_POINTS = settings.minWithdrawalPoints || 400;
       REFERRAL_BONUS_REFERRER = settings.referrerBonus || 10;
       REFERRAL_BONUS_REFEREE = settings.refereeBonus || 5;
+      
       if (db) {
         try {
-          db.collection('settings').doc('appSettings').get().then(doc => {
-            if (doc.exists) {
-              const fs = doc.data();
-              settings = Object.assign({}, settings, fs);
-              localStorage.setItem('galaxyEarnSettings', JSON.stringify(settings));
-              ADS_PER_DAY_LIMIT = settings.dailyAdLimit || ADS_PER_DAY_LIMIT;
-              POINTS_PER_AD = settings.pointsPerAd || POINTS_PER_AD;
-              MIN_WITHDRAW_POINTS = settings.minWithdrawalPoints || MIN_WITHDRAW_POINTS;
-              REFERRAL_BONUS_REFERRER = settings.referrerBonus || REFERRAL_BONUS_REFERRER;
-              REFERRAL_BONUS_REFEREE = settings.refereeBonus || REFERRAL_BONUS_REFEREE;
-              renderCurrentPage();
-            }
-          });
-        } catch (e) { /* ignore */ }
+          // Load app settings
+          const appSettingsDoc = await db.collection('settings').doc('appSettings').get();
+          if (appSettingsDoc.exists) {
+            const fs = appSettingsDoc.data();
+            settings = Object.assign({}, settings, fs);
+            localStorage.setItem('galaxyEarnSettings', JSON.stringify(settings));
+            ADS_PER_DAY_LIMIT = settings.dailyAdLimit || ADS_PER_DAY_LIMIT;
+            POINTS_PER_AD = settings.pointsPerAd || POINTS_PER_AD;
+            MIN_WITHDRAW_POINTS = settings.minWithdrawalPoints || MIN_WITHDRAW_POINTS;
+            REFERRAL_BONUS_REFERRER = settings.referrerBonus || REFERRAL_BONUS_REFERRER;
+            REFERRAL_BONUS_REFEREE = settings.refereeBonus || REFERRAL_BONUS_REFEREE;
+          }
+
+          // Load task settings
+          const taskSettingsDoc = await db.collection('settings').doc('taskSettings').get();
+          if (taskSettingsDoc.exists) {
+            const taskSettings = taskSettingsDoc.data();
+            APP_NAME = taskSettings.appName || APP_NAME;
+            TELEGRAM_BOT_TOKEN = taskSettings.telegramBotToken || TELEGRAM_BOT_TOKEN;
+            TELEGRAM_CHAT_ID = taskSettings.telegramChatId || TELEGRAM_CHAT_ID;
+            DEVELOPER_TELEGRAM_PROFILE_LINK = taskSettings.developerTelegramLink || DEVELOPER_TELEGRAM_PROFILE_LINK;
+            DEVELOPER_WEBSITE_LINK = taskSettings.developerWebsiteLink || DEVELOPER_WEBSITE_LINK;
+            OFFICIAL_CHANNEL_LINK = taskSettings.officialChannelLink || OFFICIAL_CHANNEL_LINK;
+            SUPPORT_GROUP_LINK = taskSettings.supportGroupLink || SUPPORT_GROUP_LINK;
+            REFERRAL_BOT_LINK = taskSettings.referralBotLink || REFERRAL_BOT_LINK;
+          }
+
+          // Load monetag settings
+          const monetagSettingsDoc = await db.collection('settings').doc('monetagSettings').get();
+          if (monetagSettingsDoc.exists) {
+            const monetagSettings = monetagSettingsDoc.data();
+            MONETAG_AD_FUNCTION_NAME = monetagSettings.functionName || MONETAG_AD_FUNCTION_NAME;
+            adMinimumWatchTime = (monetagSettings.minWatchTime || 15) * 1000; // Convert to milliseconds
+          }
+
+          renderCurrentPage();
+        } catch (e) { 
+          console.warn('Error loading settings:', e);
+        }
       }
       updateUI();
     }
@@ -2085,10 +2192,6 @@
               <div class="chart-title">Your Activity</div>
               <div class="chart-wrapper"><canvas id="yourStatsChart" class="chart-canvas"></canvas></div>
             </div>
-            <div class="chart-card">
-              <div class="chart-title">All Users Activity</div>
-              <div class="chart-wrapper"><canvas id="statsChart" class="chart-canvas"></canvas></div>
-            </div>
           </div>
           </div>
           <div style="background: var(--bg-card); border:1px solid var(--bg-tertiary); border-radius:12px; padding:14px;">
@@ -2104,46 +2207,19 @@
         </div>
       `;
 
-      // Chart setup
-      const labels = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-      let chartInstance = null;
-      let yourChartInstance = null;
-      const ctx = document.getElementById('statsChart');
-      function renderChart(dataPoints) {
-        if (!ctx || !window.Chart) return;
-        if (chartInstance) chartInstance.destroy();
-        // If no datapoints, render an empty chart with axes
-        const safeData = Array.isArray(dataPoints) && dataPoints.length ? dataPoints : new Array(labels.length).fill(0);
-        chartInstance = new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: labels,
-            datasets: [{
-              label: 'Ads Watched',
-              data: safeData,
-              fill: true,
-              tension: 0.35,
-              backgroundColor: 'rgba(126, 87, 194, 0.25)',
-              borderColor: 'rgba(126, 87, 194, 1)',
-              borderWidth: 2,
-              pointBackgroundColor: 'rgba(94, 53, 177, 1)',
-              pointBorderColor: '#fff',
-              pointRadius: 3
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-              x: { grid: { display: false }, ticks: { color: getComputedStyle(document.body).getPropertyValue('--text-secondary') } },
-              y: { grid: { color: 'rgba(160,174,192,0.2)' }, ticks: { color: getComputedStyle(document.body).getPropertyValue('--text-secondary') }, beginAtZero: true }
-            },
-            animation: { duration: 300 },
-            layout: { padding: { right: 8, left: 2, top: 4, bottom: 4 } }
-          }
-        });
+      // Chart setup - align days so current day is at the end
+      const today = new Date();
+      const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      const currentDayIndex = today.getDay();
+      
+      // Create labels array starting from 6 days ago to today
+      const labels = [];
+      for (let i = 6; i >= 0; i--) {
+        const dayIndex = (currentDayIndex - i + 7) % 7;
+        labels.push(dayNames[dayIndex]);
       }
+      
+      let yourChartInstance = null;
 
       // Render per-user activity chart
       const yourCtx = document.getElementById('yourStatsChart');
@@ -2213,8 +2289,6 @@
           statisticsUnsubscribe = db.collection('users').onSnapshot(snapshot => {
             const users = snapshot.docs.map(d => d.data() || {});
             updateStatsUIFromUsers(users);
-            // Do not fabricate all-users activity; only render if you have true time-series data
-            renderChart([]);
             // User series from local activity
             renderYourChart(getUserWeeklySeries());
           }, err => {
@@ -2238,8 +2312,6 @@
           totalAdsWatchedLifetime: u.totalAdsWatchedLifetime || 0
         }));
         updateStatsUIFromUsers(usersArray);
-        // No fabricated all-users activity locally
-        renderChart([]);
         renderYourChart(getUserWeeklySeries());
       }
 
@@ -2248,9 +2320,8 @@
         const key = 'galaxyEarnUserDailyActivity';
         const data = JSON.parse(localStorage.getItem(key) || '{}');
         const today = new Date();
-        const dayIdx = (d) => d.getDay(); // 0..6
         const base = new Date(today);
-        // Construct last 7 days labels mapping
+        // Construct last 7 days data aligned with chart labels
         const series = [];
         for (let i = 6; i >= 0; i--) {
           const d = new Date(base);
@@ -2266,7 +2337,7 @@
       window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
-          try { if (chartInstance) chartInstance.resize(); if (yourChartInstance) yourChartInstance.resize(); } catch (e) {}
+          try { if (yourChartInstance) yourChartInstance.resize(); } catch (e) {}
         }, 150);
       }, { passive: true });
 
@@ -2299,6 +2370,8 @@
     // Ad handling
     let adWatchedSuccessfully = false;
     let adRewardPending = false;
+    let adStartTime = null;
+    let adTimerInterval = null;
 
     function handleWatchDailyAd() {
       const today = new Date().toLocaleDateString();
@@ -2316,10 +2389,14 @@
 
       adWatchedSuccessfully = false;
       adRewardPending = true;
+      adStartTime = Date.now();
       openAdModal("Launching Ad...");
       adSpinner.style.display = 'block';
       adCloseBtn.style.display = 'none';
       adStatusMessage.textContent = "Please wait while we load the ad";
+
+      // Start timer to track minimum watch time
+      startAdTimer();
 
       if (MONETAG_AD_FUNCTION_NAME && typeof window[MONETAG_AD_FUNCTION_NAME] === 'function') {
         try {
@@ -2367,6 +2444,34 @@
       }
     }
 
+    function startAdTimer() {
+      if (adTimerInterval) {
+        clearInterval(adTimerInterval);
+      }
+      
+      adTimerInterval = setInterval(() => {
+        if (adStartTime && adRewardPending) {
+          const elapsed = Date.now() - adStartTime;
+          const remaining = Math.max(0, adMinimumWatchTime - elapsed);
+          
+          if (remaining > 0) {
+            const secondsRemaining = Math.ceil(remaining / 1000);
+            adStatusMessage.textContent = `Please watch the full ad to claim your reward (${secondsRemaining}s minimum)`;
+          } else {
+            clearInterval(adTimerInterval);
+            adTimerInterval = null;
+          }
+        }
+      }, 1000);
+    }
+
+    function stopAdTimer() {
+      if (adTimerInterval) {
+        clearInterval(adTimerInterval);
+        adTimerInterval = null;
+      }
+    }
+
     function handleAdError(errorMessage) {
       if (adRewardPending) {
         adSpinner.style.display = 'none';
@@ -2387,28 +2492,37 @@
 
     function closeAdModalAndReward() {
       adModal.classList.remove('show');
+      stopAdTimer();
+      
       if (adWatchedSuccessfully && adRewardPending) {
-        currentUser.points += POINTS_PER_AD;
-        currentUser.adsWatchedToday++;
-        currentUser.totalAdsWatchedLifetime++;
-        currentUser.lastAdWatchDate = new Date().toLocaleDateString();
-        // Track per-day user activity for charts
-        try {
-          const key = 'galaxyEarnUserDailyActivity';
-          const data = JSON.parse(localStorage.getItem(key) || '{}');
-          const today = new Date();
-          const ymd = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-          data[ymd] = Number(data[ymd] || 0) + 1;
-          localStorage.setItem(key, JSON.stringify(data));
-        } catch (e) {}
-        updateUI();
-        saveUserState();
-        showToast(`+${POINTS_PER_AD} points earned!`);
+        // Check if minimum watch time has been met
+        const elapsed = adStartTime ? Date.now() - adStartTime : 0;
+        if (elapsed >= adMinimumWatchTime) {
+          currentUser.points += POINTS_PER_AD;
+          currentUser.adsWatchedToday++;
+          currentUser.totalAdsWatchedLifetime++;
+          currentUser.lastAdWatchDate = new Date().toLocaleDateString();
+          // Track per-day user activity for charts
+          try {
+            const key = 'galaxyEarnUserDailyActivity';
+            const data = JSON.parse(localStorage.getItem(key) || '{}');
+            const today = new Date();
+            const ymd = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+            data[ymd] = Number(data[ymd] || 0) + 1;
+            localStorage.setItem(key, JSON.stringify(data));
+          } catch (e) {}
+          updateUI();
+          saveUserState();
+          showToast(`+${POINTS_PER_AD} points earned!`);
+        } else {
+          showToast("Ad was closed before 15 seconds, no points awarded.");
+        }
       } else if (adRewardPending && !adWatchedSuccessfully) {
         showToast("Ad not completed. No points awarded.");
       }
       adRewardPending = false;
       adWatchedSuccessfully = false;
+      adStartTime = null;
     }
 
     // Bonus channel handling
@@ -2647,5 +2761,6 @@ Referral From:
 </body>
 
 </html>
+
 
 
